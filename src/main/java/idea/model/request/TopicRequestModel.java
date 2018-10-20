@@ -1,6 +1,5 @@
 package idea.model.request;
 
-
 import java.util.Date;
 import java.util.List;
 import idea.model.entity.UserEntity;
@@ -16,7 +15,6 @@ public class TopicRequestModel {
   private UserEntity author;
   private List<UserRequestModel> privacy;
   private String backgroundImageUrl;
-  private String backgroundColor;
   private Date createTimestamp;
   private Date lastUpdateTimestamp;  
 }

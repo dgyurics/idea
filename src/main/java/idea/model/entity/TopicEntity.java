@@ -5,6 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import org.hibernate.annotations.CreationTimestamp;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -20,7 +21,9 @@ public class TopicEntity {
   private Long userId;
   @Column(nullable = false)
   private String name;
-  @Column(nullable = false)
+  private String backgroundImageUrl;
+  @Column(nullable = false, updatable = false)
+  @CreationTimestamp
   private Date createTimestamp;
   private Date lastUpdateTimestamp;
 }

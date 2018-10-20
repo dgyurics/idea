@@ -8,7 +8,6 @@ import lombok.ToString;
 @Getter @Setter
 public class MessageRequestModel {
   private Long id;
-  private Long topicId;
   private UserRequestModel author;
   private String content;
 }

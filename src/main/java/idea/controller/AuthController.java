@@ -20,4 +20,8 @@ public class AuthController {
   @PostMapping("/register")
   public void register(@RequestBody UserRequestModel user) {
   }
+
+  @PostMapping("/reset")
+  public void forgotPassword(@RequestBody UserRequestModel user) {
+  }
 }

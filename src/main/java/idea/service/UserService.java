@@ -1,13 +1,14 @@
 package idea.service;
 
 import java.util.Collection;
+import idea.model.entity.UserEntity;
 import idea.model.request.UserRequestModel;
 
 public interface UserService {
-  UserRequestModel save(UserRequestModel user);
-  Boolean delete(long id);
-  UserRequestModel update(UserRequestModel user);
-  UserRequestModel findById(long id);
-  UserRequestModel findByUsername(String username);
-  Collection<UserRequestModel> findAll();
+  UserEntity createNewUser(UserRequestModel user);
+  void resetPassword(long id);
+  void delete(long id);
+  UserEntity findById(long id);
+  UserEntity findByUsername(String username);
+  Collection<UserEntity> findAll();
 }
