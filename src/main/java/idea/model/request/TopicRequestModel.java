@@ -2,7 +2,7 @@ package idea.model.request;
 
 import java.util.Date;
 import java.util.List;
-import idea.model.entity.UserEntity;
+import idea.model.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,7 +12,7 @@ import lombok.ToString;
 public class TopicRequestModel {
   private Long id;
   private String title;
-  private UserEntity author;
+  private User author;
   private List<UserRequestModel> privacy;
   private String backgroundImageUrl;
   private Date createTimestamp;

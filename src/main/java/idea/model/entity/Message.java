@@ -6,28 +6,33 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 @ToString
 @Getter @Setter
-@Entity(name = "user")
-public class UserEntity {
+@Entity(name = "message")
+public class Message {
   @Id
   @GeneratedValue
   private Long id;
+
+  @Column(nullable = false)  
+  private Long topicId;
+
   @Column(nullable = false)
-  private String username;
-  private String nickname;
-  private String mobileNumber;
-  @Column(length = 100, nullable = false)
-  private String email;
-  @ToString.Exclude
-  @Column(nullable = false)
-  private String encryptedPassword;
+  private Long userId;
+
+  @Column(nullable = false, columnDefinition = "TEXT")
+  private String message;
+
   @Column(nullable = false, updatable = false)
   @CreationTimestamp
   private Date createTimestamp;
+
+  @Column
+  @UpdateTimestamp
   private Date lastUpdateTimestamp;
 }

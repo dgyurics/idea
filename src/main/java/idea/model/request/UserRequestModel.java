@@ -7,9 +7,8 @@ import lombok.ToString;
 @ToString
 @Getter @Setter
 public class UserRequestModel {
-  private Long id;  
+  private Long id;
   private String username;
-  private String nickname;
   private String email;
   @ToString.Exclude
   private String password;

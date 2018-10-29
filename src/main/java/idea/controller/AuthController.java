@@ -5,20 +5,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import idea.model.request.UserRequestModel;
+import idea.service.UserService;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping
 public class AuthController {
-  @PostMapping("/login")
-  public void login(@RequestBody UserRequestModel user) {
-  }
-
-  @PostMapping("/logout")
-  public void logout(@RequestBody UserRequestModel user) {
+  private final UserService service;
+  
+  AuthController(UserService service) {
+    this.service = service;
   }
 
   @PostMapping("/register")
   public void register(@RequestBody UserRequestModel user) {
+    service.createNewUser(user);
   }
 
   @PostMapping("/reset")
