@@ -2,8 +2,8 @@ package idea.service;
 
 import javax.ws.rs.WebApplicationException;
 import idea.model.entity.User;
-import idea.model.request.UserRequestModel;
+import idea.model.request.RegistrationRequestModel;
 
 public interface UserService {
-  User createNewUser(UserRequestModel user) throws WebApplicationException;
+  User createNewUser(RegistrationRequestModel user) throws WebApplicationException;
 }
