@@ -36,6 +36,10 @@ public abstract class BaseIT {
     return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/register").build().toUri();
   }
 
+  protected URI getHealthCheckUri() {
+    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/health").build().toUri();
+  }
+
   protected URI getLoginUri(String username, String password) {
     return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/login")
         .query("username={username}")
