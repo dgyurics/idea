@@ -4,9 +4,3 @@ services:
     build: .
     ports:
      - "8081:8080"
-    deploy:
-      resources:
-        limits:
-          memory: 150M
-        reservations:
-          memory: 100M
