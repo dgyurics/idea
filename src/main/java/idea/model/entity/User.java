@@ -13,7 +13,7 @@ import lombok.ToString;
 
 @ToString
 @Getter @Setter
-@Entity(name = "user")
+@Entity(name = "user_spring_security") // user is a reserved word in many databases
 public class User {
   @Id
   @GeneratedValue
