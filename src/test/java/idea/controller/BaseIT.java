@@ -15,6 +15,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.util.UriComponentsBuilder;
 import idea.model.request.RegistrationRequestModel;
 
+// FIXME remove BaseIT and refactor to utility class
+// Should not use inheritance for testing generally.
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public abstract class BaseIT {

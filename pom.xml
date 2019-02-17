@@ -46,16 +46,20 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
     </dependency>
-    <!-- In-Memory database -->
+    <!-- In-Memory database used during development -->
     <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+    <!-- Traditional relational database used during QA/Production -->
     <dependency>
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
-    </dependency>    
+    </dependency>
+	<dependency>
+		<groupId>org.springframework.session</groupId>
+		<artifactId>spring-session-data-redis</artifactId>
+	</dependency>
     <dependency>
         <groupId>javax.ws.rs</groupId>
         <artifactId>javax.ws.rs-api</artifactId>
@@ -66,7 +70,13 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <scope>provided</scope>
-    </dependency>    
+    </dependency>
+    <dependency>
+        <groupId>redis.clients</groupId>
+        <artifactId>jedis</artifactId>
+        <type>jar</type>
+        <scope>compile</scope>
+    </dependency>
     <!-- Test dependencies -->
     <dependency>
         <groupId>org.springframework.boot</groupId>
