@@ -1,4 +1,4 @@
-package idea.controller;
+package idea.integration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

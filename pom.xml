@@ -56,10 +56,10 @@
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
     </dependency>
-	<dependency>
-		<groupId>org.springframework.session</groupId>
-		<artifactId>spring-session-data-redis</artifactId>
-	</dependency>
+    <dependency>
+        <groupId>org.springframework.session</groupId>
+        <artifactId>spring-session-data-redis</artifactId>
+    </dependency>
     <dependency>
         <groupId>javax.ws.rs</groupId>
         <artifactId>javax.ws.rs-api</artifactId>
@@ -88,8 +88,13 @@
   <build>
     <plugins>
       <plugin>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-maven-plugin</artifactId>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <!-- Integration tests -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId> 
       </plugin>
     </plugins>
   </build>

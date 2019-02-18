@@ -1,4 +1,4 @@
-package idea.controller;
+package idea.integration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -17,7 +17,7 @@ public class HealthIT extends BaseIT {
 
   @Test
   public void healthCheck() {
-    ResponseEntity<Object> response = restTemplate.exchange(getHealthCheckUri(),HttpMethod.GET, null, Object.class);
+    ResponseEntity<String> response = restTemplate.exchange(getHealthCheckUri(),HttpMethod.GET, null, String.class);
     assertNotNull(response);
     assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
   }

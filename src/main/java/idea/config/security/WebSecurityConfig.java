@@ -14,6 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -47,6 +50,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
       .and()
       .csrf().disable();
+  }
+
+  @Bean
+  CorsConfigurationSource corsConfigurationSource() {
+      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+      source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+      return source;
   }
 
   @Bean

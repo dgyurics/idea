@@ -1,16 +1,14 @@
 package idea.filter;
 
 import java.io.IOException;
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
  * Filter to remove credentials from http login request URL. 
@@ -20,16 +18,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Order(1)
-public class DisableAuthCredentialsUrl implements Filter {
-
+public class DisableAuthCredentialsUrl extends OncePerRequestFilter {
   @Override
-  public void destroy() {
-    // TODO Auto-generated method stub
-  }
-
-  @Override
-  public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
-      throws IOException, ServletException {
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain filterChain) throws ServletException, IOException {
     filterChain.doFilter(
         new HttpServletRequestWrapper((HttpServletRequest) request) {
             @Override
@@ -43,11 +35,5 @@ public class DisableAuthCredentialsUrl implements Filter {
             }
         },response
       );
-  }
-
-  @Override
-  public void init(FilterConfig arg0) throws ServletException {
-    // TODO Auto-generated method stub
-    
   }
 }

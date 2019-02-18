@@ -1,4 +1,4 @@
-package idea.controller;
+package idea.integration;
 
 import java.net.URI;
 import javax.ws.rs.core.HttpHeaders;
@@ -11,6 +11,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.util.UriComponentsBuilder;
 import idea.model.request.RegistrationRequestModel;
@@ -18,6 +19,7 @@ import idea.model.request.RegistrationRequestModel;
 // FIXME remove BaseIT and refactor to utility class
 // Should not use inheritance for testing generally.
 @RunWith(SpringRunner.class)
+@TestPropertySource(locations = "/application-test.properties")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public abstract class BaseIT {
   private static final String USERNAME = "dennis";

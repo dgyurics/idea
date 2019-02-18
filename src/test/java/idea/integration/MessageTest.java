@@ -1,8 +1,8 @@
-package idea.controller;
+package idea.integration;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class MessageIT {
+public class MessageTest {
 
 }
