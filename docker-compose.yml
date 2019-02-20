@@ -3,4 +3,4 @@ services:
   api:
     build: .
     ports:
-     - "8090:8080"
+     - "8081:8080"
