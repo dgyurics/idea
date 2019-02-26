@@ -6,4 +6,5 @@ import idea.model.request.RegistrationRequestModel;
 
 public interface UserService {
   User createNewUser(RegistrationRequestModel user) throws WebApplicationException;
+  void deleteUser(RegistrationRequestModel user) throws WebApplicationException;
 }
