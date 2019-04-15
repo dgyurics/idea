@@ -2,6 +2,7 @@ package idea.controller;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,11 +35,13 @@ public class AuthController {
 
   @PostMapping("/forgot-password")
   public void forgotPassword(@RequestBody @Validated(PasswordRequestGroup.class) UserRequestModel user) {
-    service.requestPassword(user);
+    service.requestResetPassword(user);
   }
 
-  @PostMapping("/reset-password")
-  public void resetPassword(@RequestBody @Validated(PasswordConfirmationGroup.class) UserRequestModel user) {
-    service.resetPassword(user);
+  @PostMapping("/reset-password/{userId}")
+  public void resetPassword(
+      @RequestBody @Validated(PasswordConfirmationGroup.class) UserRequestModel user,
+      @PathVariable long userId) {
+    service.resetPassword(userId, user);
   }
 }

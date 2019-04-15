@@ -32,6 +32,14 @@ public abstract class BaseIT {
     return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/topic").build().toUri();
   }
 
+  protected URI getForgotPasswordUri() {
+    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/forgot-password").build().toUri();
+  }
+
+  protected URI getResetPasswordUri(String userId) {
+    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/reset-password/{userId}").buildAndExpand(userId).toUri();
+  }
+
   protected URI getHealthCheckUri() {
     return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/health").build().toUri();
   }

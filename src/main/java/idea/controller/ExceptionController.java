@@ -21,8 +21,8 @@ public class ExceptionController {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
   }
 
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<?> handleValidation(HttpServletRequest request, MethodArgumentNotValidException e) {
+  @ExceptionHandler(value = {IllegalArgumentException.class, MethodArgumentNotValidException.class})
+  public ResponseEntity<?> handleValidation(HttpServletRequest request, Exception e) {
     logger.error(e.getMessage(), e);
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
   }

@@ -7,6 +7,6 @@ import idea.model.request.UserRequestModel;
 public interface UserService {
   User createNewUser(UserRequestModel user) throws WebApplicationException;
   void deleteUser(UserRequestModel user) throws WebApplicationException;
-  void requestPassword(UserRequestModel user);
-  void resetPassword(UserRequestModel user);
+  void requestResetPassword(UserRequestModel user);
+  void resetPassword(long userId, UserRequestModel user);
 }

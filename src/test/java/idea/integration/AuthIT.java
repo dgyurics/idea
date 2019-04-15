@@ -105,7 +105,7 @@ public class AuthIT extends BaseIT {
     model.setPassword("password456");
     response = restTemplate.exchange(getRegistrationUri(), HttpMethod.DELETE, new HttpEntity<>(model), String.class);
     assertNotNull(response);
-    assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
   @Test
@@ -114,14 +114,9 @@ public class AuthIT extends BaseIT {
     model.setUsername(USERNAME);
     model.setPassword(PASSWORD);
 
-    ResponseEntity<String> response = restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
+    ResponseEntity<String> response = restTemplate.exchange(getRegistrationUri(), HttpMethod.DELETE, new HttpEntity<>(model), String.class);
     assertNotNull(response);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-
-    model.setUsername("johndoe");
-    response = restTemplate.exchange(getRegistrationUri(), HttpMethod.DELETE, new HttpEntity<>(model), String.class);
-    assertNotNull(response);
-    assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
   @Test
