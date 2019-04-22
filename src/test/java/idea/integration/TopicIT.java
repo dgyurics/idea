@@ -13,8 +13,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import idea.model.entity.Topic;
-import idea.model.request.RegistrationRequestModel;
 import idea.model.request.TopicRequestModel;
+import idea.model.request.UserRequestModel;
 
 public class TopicIT extends BaseIT {
   private static final String USERNAME = "username";
@@ -22,9 +22,8 @@ public class TopicIT extends BaseIT {
 
   @After
   public void after() {
-    RegistrationRequestModel model = new RegistrationRequestModel();
-    model.setUsername(USERNAME);
-    model.setPassword(PASSWORD);
+    UserRequestModel model = UserRequestModel
+        .builder().username(USERNAME).password(PASSWORD).build();
     restTemplate.exchange(getRegistrationUri(), HttpMethod.DELETE, new HttpEntity<>(model), String.class);
   }
 
@@ -39,9 +38,8 @@ public class TopicIT extends BaseIT {
 
   @Test
   public void createTopic() {
-    RegistrationRequestModel model = new RegistrationRequestModel();
-    model.setUsername(USERNAME);
-    model.setPassword(PASSWORD);
+    UserRequestModel model = UserRequestModel
+        .builder().username(USERNAME).password(PASSWORD).build();
 
     restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     final ResponseEntity<String> response = restTemplate.exchange(getLoginUri(USERNAME, PASSWORD), HttpMethod.POST, null, String.class);

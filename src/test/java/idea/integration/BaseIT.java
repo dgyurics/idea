@@ -1,20 +1,15 @@
 package idea.integration;
 
 import java.net.URI;
-import javax.ws.rs.core.HttpHeaders;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.util.UriComponentsBuilder;
-import idea.model.request.RegistrationRequestModel;
 
 // FIXME remove BaseIT and refactor to utility class
 // Should not use inheritance for testing generally.
@@ -35,6 +30,14 @@ public abstract class BaseIT {
 
   protected URI getTopicUri() {
     return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/topic").build().toUri();
+  }
+
+  protected URI getForgotPasswordUri() {
+    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/forgot-password").build().toUri();
+  }
+
+  protected URI getResetPasswordUri(String userId) {
+    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/reset-password/{userId}").buildAndExpand(userId).toUri();
   }
 
   protected URI getHealthCheckUri() {

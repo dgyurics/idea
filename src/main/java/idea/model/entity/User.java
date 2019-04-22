@@ -5,15 +5,26 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+// User is a reserved word in many databases
 @ToString
 @Getter @Setter
-@Entity(name = "user_spring_security") // user is a reserved word in many databases
+@Builder @NoArgsConstructor @AllArgsConstructor
+@Entity
+@Table(name = "user_spring_security", indexes = {
+    @Index(columnList = "id", name = "user_id_index"),
+    @Index(columnList = "email", name = "user_email_index")
+})
 public class User {
   @Id
   @GeneratedValue
@@ -48,8 +59,6 @@ public class User {
   @Column
   @UpdateTimestamp
   private Date lastUpdateTimestamp;
-  
-  public User(){}
 
   public User(User user) {
     this.id = user.getId();
