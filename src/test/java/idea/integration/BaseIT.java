@@ -40,8 +40,8 @@ public abstract class BaseIT {
     return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/reset-password/{userId}").buildAndExpand(userId).toUri();
   }
 
-  protected URI getContactUsUri() {
-    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/contact").build().toUri();
+  protected URI getContactUsUri(String reCaptchaResponse) {
+    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/contact/{reCaptchaResponse}").buildAndExpand(reCaptchaResponse).toUri();
   }
 
   protected URI getHealthCheckUri() {

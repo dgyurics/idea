@@ -11,17 +11,18 @@ public class EmailServiceImpl implements EmailService {
   private final JavaMailSender emailSender;
 
   EmailServiceImpl(JavaMailSender emailSender) {
-    this.emailSender = emailSender;
+    this.emailSender= emailSender;
   }
 
   @Override
   public void forwardContactUsMessage(ContactUsRequestModel message) {
     final String text = String.format("Contact info: %s \n%s", message.getContactInfo(), message.getMessage());
     final SimpleMailMessage mailMessage = new SimpleMailMessage();
-    mailMessage.setTo("denxnis@gmail.com"); // move this to configuration file
+    mailMessage.setTo("denxnis@gmail.com"); // TODO: move this to configuration file
     mailMessage.setSubject("lagom.life message");
     mailMessage.setText(text);
     send(mailMessage);
+    //return Mono.fromRunnable(() -> send(mailMessage));
   }
 
   @Override
