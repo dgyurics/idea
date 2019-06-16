@@ -17,7 +17,6 @@ import idea.utility.Validate;
 
 @Component
 public class UserServiceImpl implements UserService {
-
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
   private final EmailService emailService;
   private final UserRepository userRepository;

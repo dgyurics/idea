@@ -1,5 +1,6 @@
 package idea.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,8 @@ public class ContactController {
   }
 
   @PostMapping
-  public void createMessage(@RequestBody @Validated ContactUsRequestModel message) {
+  public void createMessage(@RequestBody @Validated ContactUsRequestModel message, HttpServletRequest request) {
+    message.setRemoteAddr(request.getRemoteAddr());
     service.sendMessage(message);
   }
 }

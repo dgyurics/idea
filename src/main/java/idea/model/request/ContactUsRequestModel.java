@@ -18,4 +18,6 @@ public class ContactUsRequestModel {
   private String contactInfo;
   @NotBlank
   private String message;
+  private String reCaptchaResponse;
+  private String remoteAddr;
 }
