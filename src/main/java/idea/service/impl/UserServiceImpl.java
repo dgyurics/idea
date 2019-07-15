@@ -3,6 +3,7 @@ package idea.service.impl;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.ws.rs.WebApplicationException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,7 +86,8 @@ public class UserServiceImpl implements UserService {
 
   private void validateUserNotExist(UserRequestModel user) {
     Validate.isTrue(!userRepository.findByUsername(user.getUsername()).isPresent(), "User with that username already exists", 409);
-    Validate.isTrue(!userRepository.findByEmail(user.getEmail()).isPresent(), "User with that email already exists", 409);
+    if (StringUtils.isNotEmpty(user.getEmail()))
+      Validate.isTrue(!userRepository.findByEmail(user.getEmail()).isPresent(), "User with that email already exists", 409);
   }
 
   private Long validateDeleteRequest(UserRequestModel registrationRequest) throws WebApplicationException {
