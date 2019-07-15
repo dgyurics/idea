@@ -13,3 +13,7 @@ Session management is normally handled by a servlet container, such as Tomcat or
 #### Docker environment variables
 A `.env` file is required by `docker-compose.yml` in order to properly setup environment
 variables. See `application.properties` to identify what variables the application requires.
+
+#### Pitfall
+There may be instances where there is not enough entropy in a system to quickly generate a psuedorandom number. This can cause
+issues. To resolve this, install `haveged`. For additional details visit [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-setup-additional-entropy-for-cloud-servers-using-haveged) from Digital Ocean.
