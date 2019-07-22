@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -47,7 +48,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       .formLogin()
         .loginProcessingUrl("/login")
         .failureHandler(customAuthenticationFailureHandler())
-        .successHandler(customerAuthenticationSuccessHandler())
+        .successHandler(customAuthenticationSuccessHandler())
+      .and()
+        .logout()
+        .logoutUrl("/logout")
+        .logoutSuccessHandler(customLogoutSuccessHandler())
+        .invalidateHttpSession(true)
+        .deleteCookies("SESSIONID")
       .and()
       .exceptionHandling()
         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
@@ -77,7 +84,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
-  public AuthenticationSuccessHandler customerAuthenticationSuccessHandler() {
+  public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
     return new CustomAuthenticationSuccessHandler();
+  }
+
+  @Bean
+  public HttpStatusReturningLogoutSuccessHandler customLogoutSuccessHandler() {
+    return new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK);
   }
 }
