@@ -32,7 +32,7 @@ public class EmailServiceImpl implements EmailService {
   // TODO move email content to configuration file
   @Override
   public void sendResetCode(final String to, final String userId, int code) {
-    final String text = String.format("Your reset code is %s. Enter at https://lagom.life/reset-password/%s", code, userId);
+    final String text = String.format("Your reset code is %s. Enter at https://lagom.life/authentication/%s", code, userId);
     final SimpleMailMessage message = new SimpleMailMessage();
     message.setTo(to);
     message.setSubject("Password reset");

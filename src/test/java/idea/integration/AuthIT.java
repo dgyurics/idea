@@ -13,8 +13,9 @@ import org.springframework.http.ResponseEntity;
 import idea.model.request.UserRequestModel;
 
 public class AuthIT extends BaseIT {
-  private static final String USERNAME = "username";
+  private static final String USERNAME = "username@gmail.com";
   private static final String PASSWORD = "password";
+  private static final Integer REGISTRATION_CODE = 123456;
 
   @After
   public void after() {
@@ -34,7 +35,7 @@ public class AuthIT extends BaseIT {
   @Test
   public void register() {
     UserRequestModel model = UserRequestModel.builder()
-        .username(USERNAME).password(PASSWORD).build();
+        .username(USERNAME).password(PASSWORD).registrationCode(REGISTRATION_CODE).build();
 
     ResponseEntity<String> response = restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     assertNotNull(response);
@@ -44,7 +45,7 @@ public class AuthIT extends BaseIT {
   @Test
   public void register__userExists() {
     UserRequestModel model = UserRequestModel
-        .builder().username(USERNAME).password(PASSWORD).build();
+        .builder().username(USERNAME).password(PASSWORD).registrationCode(REGISTRATION_CODE).build();
 
     ResponseEntity<String> response = restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     assertNotNull(response);
@@ -56,28 +57,9 @@ public class AuthIT extends BaseIT {
   }
 
   @Test
-  public void register__duplicateEmails() {
-    final String EMAIL = "email@gmail.com";
-
-    /* Register new user */
-    UserRequestModel model = UserRequestModel.builder()
-        .username(USERNAME).password(PASSWORD).email(EMAIL).build();
-    ResponseEntity<String> response = restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
-    assertNotNull(response);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-
-    /* Register new user */
-    model = UserRequestModel
-        .builder().username("randomuser").password(PASSWORD).email(EMAIL).build();
-    response = restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
-    assertNotNull(response);
-    assertEquals(HttpStatus.CONFLICT, response.getStatusCode());    
-  }
-
-  @Test
   public void deleteUser() {
     UserRequestModel model = UserRequestModel
-        .builder().username(USERNAME).password(PASSWORD).build();
+        .builder().username(USERNAME).password(PASSWORD).registrationCode(REGISTRATION_CODE).build();
 
     ResponseEntity<String> response = restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     assertNotNull(response);
@@ -97,6 +79,7 @@ public class AuthIT extends BaseIT {
     UserRequestModel model = new UserRequestModel();
     model.setUsername(USERNAME);
     model.setPassword(PASSWORD);
+    model.setRegistrationCode(REGISTRATION_CODE);
 
     ResponseEntity<String> response = restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     assertNotNull(response);
@@ -131,7 +114,7 @@ public class AuthIT extends BaseIT {
   @Test
   public void login() {
     UserRequestModel model = UserRequestModel.builder()
-        .username(USERNAME).password(PASSWORD).build();
+        .username(USERNAME).password(PASSWORD).registrationCode(REGISTRATION_CODE).build();
 
     ResponseEntity<String> responseRegister = restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     assertNotNull(responseRegister);

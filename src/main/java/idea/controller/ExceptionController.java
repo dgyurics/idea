@@ -1,6 +1,8 @@
 package idea.controller;
 
+import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +26,13 @@ public class ExceptionController {
   @ExceptionHandler(value = {IllegalArgumentException.class, MethodArgumentNotValidException.class})
   public ResponseEntity<?> handleValidation(HttpServletRequest request, Exception e) {
     logger.error(e.getMessage(), e);
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
   }
 
   @ExceptionHandler(WebApplicationException.class)
   public ResponseEntity<?> handleWebapplication(HttpServletRequest request, WebApplicationException e) {
     logger.error(e.getMessage(), e);
-    return ResponseEntity.status(e.getResponse().getStatus()).build();
+    return ResponseEntity.status(e.getResponse().getStatus()).body(e.getMessage());
   }
 
   @ExceptionHandler(AccessDeniedException.class)

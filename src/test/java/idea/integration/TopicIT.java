@@ -17,8 +17,9 @@ import idea.model.request.TopicRequestModel;
 import idea.model.request.UserRequestModel;
 
 public class TopicIT extends BaseIT {
-  private static final String USERNAME = "username";
+  private static final String USERNAME = "username@gmail.com";
   private static final String PASSWORD = "password";
+  private static final Integer REGISTRATION_CODE = 123456;
 
   @After
   public void after() {
@@ -39,7 +40,7 @@ public class TopicIT extends BaseIT {
   @Test
   public void createTopic() {
     UserRequestModel model = UserRequestModel
-        .builder().username(USERNAME).password(PASSWORD).build();
+        .builder().username(USERNAME).password(PASSWORD).registrationCode(REGISTRATION_CODE).build();
 
     restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     final ResponseEntity<String> response = restTemplate.exchange(getLoginUri(USERNAME, PASSWORD), HttpMethod.POST, null, String.class);

@@ -1,5 +1,6 @@
 package idea.controller;
 
+import idea.model.validation.group.ResetCodeValidationGroup;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,10 +36,17 @@ public class AuthController {
 
   @PostMapping("/forgot-password")
   public void forgotPassword(@RequestBody @Validated(PasswordRequestGroup.class) UserRequestModel user) {
-    service.requestResetPassword(user);
+    service.requestResetPassword(user.getUsername());
   }
 
-  @PostMapping("/reset-password/{userId}")
+  @PostMapping("/forgot-password/valid-reset-code/{userId}")
+  public void isValidResetCode(
+      @RequestBody @Validated(ResetCodeValidationGroup.class) UserRequestModel user,
+      @PathVariable long userId) {
+    service.validateResetCode(userId, user);
+  }
+
+  @PostMapping("/forgot-password/{userId}")
   public void resetPassword(
       @RequestBody @Validated(PasswordConfirmationGroup.class) UserRequestModel user,
       @PathVariable long userId) {

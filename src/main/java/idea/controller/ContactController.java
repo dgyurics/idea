@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import idea.model.request.ContactUsRequestModel;
 import idea.service.ContactService;
 
-@CrossOrigin
 @RestController
 @RequestMapping("contact")
 public class ContactController {

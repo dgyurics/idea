@@ -1,5 +1,6 @@
 package idea.model.request;
 
+import idea.model.validation.group.ResetCodeValidationGroup;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -22,21 +23,26 @@ import lombok.ToString;
 public class UserRequestModel {
   private Long id;
 
-  @Size(min = 3,max = 30, groups = {NewUserGroup.class, RemoveUserGroup.class})
-  @NotEmpty(groups = {NewUserGroup.class, RemoveUserGroup.class})
+  @NotEmpty(groups = {NewUserGroup.class, RemoveUserGroup.class, PasswordRequestGroup.class})
+  @Email(groups = {NewUserGroup.class, RemoveUserGroup.class, PasswordRequestGroup.class},
+      message="Username must be a valid email")
   private String username;
 
-  @NotEmpty(groups = {PasswordRequestGroup.class})
-  @Email(groups = {NewUserGroup.class, RemoveUserGroup.class, PasswordRequestGroup.class})
-  private String email;
-
   @ToString.Exclude
-  @Size(min = 5,max = 100, groups = {NewUserGroup.class, RemoveUserGroup.class, PasswordConfirmationGroup.class})
+  @Size(min = 5, groups = {NewUserGroup.class, RemoveUserGroup.class, PasswordConfirmationGroup.class},
+      message="Password must be at least five characters long")
+  @Size(max = 50, groups = {NewUserGroup.class, RemoveUserGroup.class, PasswordConfirmationGroup.class},
+      message="Password must be at least five characters long")
   @NotEmpty(groups = {NewUserGroup.class, RemoveUserGroup.class, PasswordConfirmationGroup.class})
   private String password;
 
   @ToString.Exclude
-  @Min(value = 100000, groups = {PasswordConfirmationGroup.class})
-  @Max(value = 999999, groups = {PasswordConfirmationGroup.class})
+  @Min(value = 100000, groups = {PasswordConfirmationGroup.class, ResetCodeValidationGroup.class}, message="Reset code must be six digits")
+  @Max(value = 999999, groups = {PasswordConfirmationGroup.class, ResetCodeValidationGroup.class}, message="Reset code must be six digits")
   private int resetCode;
+
+  @ToString.Exclude
+  //@Min(value = 100000, groups = {NewUserGroup.class})
+  //@Max(value = 999999, groups = {NewUserGroup.class})
+  private int registrationCode;
 }

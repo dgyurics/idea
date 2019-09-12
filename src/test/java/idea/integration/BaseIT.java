@@ -37,7 +37,7 @@ public abstract class BaseIT {
   }
 
   protected URI getResetPasswordUri(String userId) {
-    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/reset-password/{userId}").buildAndExpand(userId).toUri();
+    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/forgot-password/{userId}").buildAndExpand(userId).toUri();
   }
 
   protected URI getContactUsUri() {

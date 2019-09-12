@@ -22,8 +22,7 @@ import lombok.ToString;
 @Builder @NoArgsConstructor @AllArgsConstructor
 @Entity
 @Table(name = "user_spring_security", indexes = {
-    @Index(columnList = "id", name = "user_id_index"),
-    @Index(columnList = "email", name = "user_email_index")
+    @Index(columnList = "id", name = "user_id_index")
 })
 public class User {
   @Id
@@ -38,9 +37,6 @@ public class User {
 
   @Column
   private String mobileNumber;
-
-  @Column(unique=true)
-  private String email;
 
   @ToString.Exclude
   @Column(nullable = false, length = 60)
@@ -65,7 +61,6 @@ public class User {
     this.username = user.getUsername();
     this.nickname = user.getNickname();
     this.mobileNumber = user.getMobileNumber();
-    this.email = user.getEmail();
     this.password = user.getPassword();
     this.active = user.isActive();
     this.role = user.getRole();

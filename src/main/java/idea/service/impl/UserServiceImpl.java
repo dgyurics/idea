@@ -3,9 +3,10 @@ package idea.service.impl;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.ws.rs.WebApplicationException;
-import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import idea.model.entity.Reset;
 import idea.model.entity.User;
@@ -16,14 +17,17 @@ import idea.service.EmailService;
 import idea.service.UserService;
 import idea.utility.Validate;
 
-@Component
+@Service
 public class UserServiceImpl implements UserService {
+
+  private Logger logger = LoggerFactory.getLogger(UserService.class);
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
   private final EmailService emailService;
   private final UserRepository userRepository;
   private final ResetRepository resetRepository;
 
-  UserServiceImpl(UserRepository repository, EmailService emailService, ResetRepository resetRepository) {
+  UserServiceImpl(UserRepository repository, EmailService emailService,
+      ResetRepository resetRepository) {
     this.bCryptPasswordEncoder = new BCryptPasswordEncoder();
     this.emailService = emailService;
     this.userRepository = repository;
@@ -33,10 +37,10 @@ public class UserServiceImpl implements UserService {
   @Override
   public User createNewUser(UserRequestModel user) throws WebApplicationException {
     validateUserNotExist(user);
+    // validateRegistrationCode(user.getRegistrationCode());
     User userEntity = new User();
     userEntity.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
     userEntity.setUsername(user.getUsername());
-    userEntity.setEmail(user.getEmail());
     userEntity.setActive(true);
     userEntity.setRole("USER");
     return userRepository.save(userEntity);
@@ -51,13 +55,30 @@ public class UserServiceImpl implements UserService {
 
   @Transactional
   @Override
-  public void requestResetPassword(UserRequestModel user) {
-    Optional<User> userDb = userRepository.findByEmail(user.getEmail());
-    validateResetCodeNotExist(user.getEmail());
-    validateEmail(userDb);
-    final int resetCode = generateResetCode();
-    resetRepository.save(new Reset(user.getEmail(), resetCode, true));
-    emailResetCode(user.getEmail(), userDb.get().getId().toString(), resetCode);
+  public void requestResetPassword(final String username) {
+    logger.info("New reset password request received for user {}", username);
+    new Thread(() -> {
+      final Optional<User> user = userRepository.findByUsername(username);
+      if(!user.isPresent()) {
+        logger.error("User does not exist {}", username);
+        return;
+      }
+      final int resetCode = generateResetCode();
+      final Reset result  = resetRepository.save(
+          Reset.builder()
+              .resetCode(resetCode)
+              .valid(true)
+              .username(user.get().getUsername()).build());
+      emailResetCode(username, user.get().getId().toString(), resetCode);
+    }).start();
+  }
+
+  @Transactional
+  @Override
+  public void validateResetCode(long userId, UserRequestModel user) {
+    final Optional<User> userToUpdate = userRepository.findById(userId);
+    Validate.isTrue(userToUpdate.isPresent(), "Invalid user ID", 400);
+    validateResetCode(userToUpdate.get().getUsername(), user.getResetCode());
   }
 
   @Transactional
@@ -65,15 +86,15 @@ public class UserServiceImpl implements UserService {
   public void resetPassword(long userId, UserRequestModel user) {
     // TODO: invalidate after after 15 minutes has elapsed
     final Optional<User> userToUpdate = userRepository.findById(userId);
-    validateUser(userToUpdate);
-    validateResetCode(userToUpdate.get().getEmail(), user.getResetCode());
+    Validate.isTrue(userToUpdate.isPresent(), "Invalid user ID", 400);
+    validateResetCode(userToUpdate.get().getUsername(), user.getResetCode());
     updateUser(userToUpdate.get(), user.getPassword());
   }
 
   private void updateUser(User existingUser, String newPassword) {
     existingUser.setPassword(bCryptPasswordEncoder.encode(newPassword));
     userRepository.save(existingUser);
-    resetRepository.invalidateToken(existingUser.getEmail());
+    resetRepository.invalidateToken(existingUser.getUsername());
   }
 
   private void emailResetCode(String toAddress, String userId, int code) {
@@ -85,35 +106,29 @@ public class UserServiceImpl implements UserService {
   }
 
   private void validateUserNotExist(UserRequestModel user) {
-    Validate.isTrue(!userRepository.findByUsername(user.getUsername()).isPresent(), "User with that username already exists", 409);
-    if (StringUtils.isNotEmpty(user.getEmail()))
-      Validate.isTrue(!userRepository.findByEmail(user.getEmail()).isPresent(), "User with that email already exists", 409);
+    Validate.isTrue(!userRepository.findByUsername(user.getUsername()).isPresent(),
+        "User with that username already exists", 409);
   }
 
-  private Long validateDeleteRequest(UserRequestModel registrationRequest) throws WebApplicationException {
+  private void validateRegistrationCode(int registrationCode) {
+    // TODO create tool to generate unique codes and validate per user
+    Validate.isTrue(123456 == registrationCode,
+        "Invalid registration code", 401);
+  }
+
+  private Long validateDeleteRequest(UserRequestModel registrationRequest)
+      throws WebApplicationException {
     Optional<User> user = userRepository.findByUsername(registrationRequest.getUsername());
     Validate.isTrue(user.isPresent(), "User does not exist", 400);
-    Validate.isTrue(bCryptPasswordEncoder.matches(registrationRequest.getPassword(), user.get().getPassword()), "Passwords did not match", 400);
+    Validate.isTrue(
+        bCryptPasswordEncoder.matches(registrationRequest.getPassword(), user.get().getPassword()),
+        "Passwords did not match", 400);
     return user.get().getId();
   }
 
-  private void validateUser(Optional<User> user) {
-    Validate.isTrue(user.isPresent(), "Invalid userId", 400);
-    Validate.isNotNull(user.get().getEmail(), "Email for user is empty", 400);
-  }
-
-  private void validateResetCodeNotExist(String email) {
-    final Optional<Reset> reset = resetRepository.findByEmail(email);
-    Validate.isFalse(reset.isPresent(), "Reset code already exists", 409);
-  }
-
   private void validateResetCode(String email, int resetCode) {
-    final Optional<Reset> reset = resetRepository.findByEmail(email);
+    final Optional<Reset> reset = resetRepository.findByUsername(email);
     Validate.isTrue(reset.isPresent(), "Reset code expired", 400);
     Validate.isTrue(reset.get().getResetCode() == resetCode, "Invalid reset code", 400);
-  }
-
-  private void validateEmail(Optional<User> user) {
-    Validate.isTrue(user.isPresent(), "Email not found", 400);
   }
 }

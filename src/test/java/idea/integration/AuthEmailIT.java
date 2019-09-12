@@ -22,9 +22,9 @@ import com.icegreen.greenmail.util.ServerSetupTest;
 import idea.model.request.UserRequestModel;
 
 public class AuthEmailIT extends BaseIT {
-  private static final String USERNAME = "username";
+  private static final String USERNAME = "myemail@yahoo.com";
   private static final String PASSWORD = "password";
-  private static final String EMAIL = "myemail@yahoo.com";
+  private static final Integer REGISTRATION_CODE = 123456;
 
   @ClassRule
   public static final GreenMailRule greenMail = new GreenMailRule(ServerSetupTest.SMTP);
@@ -37,7 +37,7 @@ public class AuthEmailIT extends BaseIT {
   @Before
   public void beforeEach() {
     removeUser(USERNAME, PASSWORD);
-    registerUser(USERNAME, PASSWORD, EMAIL);
+    registerUser(USERNAME, PASSWORD, REGISTRATION_CODE);
   }
 
   @After
@@ -48,9 +48,8 @@ public class AuthEmailIT extends BaseIT {
   // FIXME refactor
   @Test
   public void requestPasswordChange() throws MessagingException, IOException {
-    requestPasswordReset(EMAIL, HttpStatus.OK);
+    requestPasswordReset(USERNAME, HttpStatus.OK);
     assertTrue(greenMail.waitForIncomingEmail(5000, 1));
-    requestPasswordReset(EMAIL, HttpStatus.CONFLICT); // try to request another code
 
     final MimeMessage email = greenMail.getReceivedMessages()[0];
     final String subject = email.getSubject();
@@ -94,19 +93,20 @@ public class AuthEmailIT extends BaseIT {
     assertEquals(expectedHttpStatus, response.getStatusCode());
   }
 
-  private void requestPasswordReset(String email, HttpStatus expectedHttpStatus) {
+  private void requestPasswordReset(String username, HttpStatus expectedHttpStatus) {
     final UserRequestModel model = UserRequestModel.builder()
-        .email(email).build();
+        .username(username).build();
     ResponseEntity<String> response = restTemplate.exchange(getForgotPasswordUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     assertNotNull(response);
     assertEquals(expectedHttpStatus, response.getStatusCode());
   }
 
-  private void registerUser(String username, String password, String email) {
+  private void registerUser(String username, String password, int registrationCode) {
     final UserRequestModel model = UserRequestModel.builder()
         .username(username)
         .password(password)
-        .email(email).build();
+        .registrationCode(registrationCode)
+        .build();
     ResponseEntity<String> response = restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     assertNotNull(response);
     assertEquals(HttpStatus.OK, response.getStatusCode());
