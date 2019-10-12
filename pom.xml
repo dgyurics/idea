@@ -11,7 +11,7 @@
   <description>A place where ideas begin</description>
 
   <properties>
-    <java.version>10</java.version>
+    <java.version>11</java.version>
   </properties>
 
   <parent>
