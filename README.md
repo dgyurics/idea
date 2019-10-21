@@ -10,6 +10,9 @@ has been setup in the `application.properties` file in-order to revert to a prod
 #### Session management   
 Session management is normally handled by a servlet container, such as Tomcat or Jetty. However, this is not sufficient for distributed systems; thus a replacement session store/container has been setup in the `application.properties` file in-order to revert to a centralized production ready session store. Details see [Spring documentation.](https://docs.spring.io/spring-session/docs/current/reference/html5/guides/boot-redis.html)
 
+#### WebSocket
+Simple text oriented message protocol (STOMP) has been setup. Currently an in-memory version is running, however it will need to be replaced by a full-fledged message broker, such as RabbitMQ, in-order to scale.
+
 #### Docker environment variables
 A `.env` file is required by `docker-compose.yml` in order to properly setup environment
 variables. See `application.properties` to identify what variables the application requires.

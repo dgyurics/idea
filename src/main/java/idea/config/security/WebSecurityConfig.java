@@ -1,5 +1,6 @@
 package idea.config.security;
 
+import com.sun.xml.bind.v2.TODO;
 import java.util.Arrays;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,11 +40,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
+      .cors()
+      .and()
       .authorizeRequests()
         .anyRequest()
         .permitAll()
-      .and()
-      .cors()
       .and()
       .formLogin()
         .loginProcessingUrl("/login")
@@ -66,10 +67,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   CorsConfigurationSource corsConfigurationSource() {
       final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
       final CorsConfiguration configuration = new CorsConfiguration();
-      configuration.setAllowedOrigins(Arrays.asList("https://lagom.life"));
+      configuration.setAllowedOrigins(Arrays.asList("https://lagom.life", "http://localhost:8082"));
       configuration.addAllowedHeader("*");
       configuration.addAllowedMethod("*");
-      source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+      configuration.setAllowCredentials(true);
+      source.registerCorsConfiguration("/**", configuration);
       return source;
   }
 
