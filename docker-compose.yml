@@ -1,9 +1,24 @@
-version: '3'
+version: '3.7'
 services:
-  api:
-    container_name: api
-    build: .
+  database:
+    container_name: database
+    image: postgres:12
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: myuserpassword
+      POSTGRES_DB: mydb
     ports:
-     - "8081:8080"
-    env_file:
-     - .env
+      - "5432:5432"
+
+  redis:
+    container_name: redis
+    image: "redis:4-alpine"
+    command: redis-server --requirepass lagom123!
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: "rabbitmq:3.8"
+    ports:
+      - "5672:5672"

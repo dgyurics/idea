@@ -11,6 +11,6 @@ public interface ResetRepository extends CrudRepository<Reset, Long> {
   Optional<Reset> findByUsername(String username);
 
   @Modifying
-  @Query(value = "update password_reset pr set pr.valid = false where pr.username = ?1", nativeQuery = true)
+  @Query(value = "update password_reset set valid = false where username = ?1", nativeQuery = true)
   void invalidateToken(String email);
 }
