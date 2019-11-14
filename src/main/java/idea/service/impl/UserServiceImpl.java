@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.ws.rs.WebApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,24 +54,23 @@ public class UserServiceImpl implements UserService {
     userRepository.deleteById(userId);
   }
 
+  @Async
   @Transactional
   @Override
   public void requestResetPassword(final String username) {
     logger.info("New reset password request received for user {}", username);
-    new Thread(() -> {
-      final Optional<User> user = userRepository.findByUsername(username);
-      if(!user.isPresent()) {
-        logger.error("User does not exist {}", username);
-        return;
-      }
-      final int resetCode = generateResetCode();
-      final Reset result  = resetRepository.save(
-          Reset.builder()
-              .resetCode(resetCode)
-              .valid(true)
-              .username(user.get().getUsername()).build());
-      emailResetCode(username, user.get().getId().toString(), resetCode);
-    }).start();
+    final Optional<User> user = userRepository.findByUsername(username);
+    if(!user.isPresent()) {
+      logger.error("User does not exist {}", username);
+      return;
+    }
+    final int resetCode = generateResetCode();
+    final Reset result  = resetRepository.save(
+        Reset.builder()
+            .resetCode(resetCode)
+            .valid(true)
+            .username(user.get().getUsername()).build());
+    emailResetCode(username, user.get().getId().toString(), resetCode);
   }
 
   @Transactional

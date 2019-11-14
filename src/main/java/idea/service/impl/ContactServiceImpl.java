@@ -1,8 +1,10 @@
 package idea.service.impl;
 
+import java.util.concurrent.Executor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import idea.client.HttpClientNonBlock;
 import idea.client.model.CaptchaRequest;
@@ -24,13 +26,12 @@ public class ContactServiceImpl implements ContactService {
     this.captchaSecret = captchaSecret;
   }
 
-  // NOTE: not enforcing captcha yet
+  @Async
   @Override
   public void sendMessage(ContactUsRequestModel message) {
     logger.info("New contact us message received. Payload: {}", message);
-    new Thread(() -> {
-      httpClient.validateCaptcha(new CaptchaRequest(message.getReCaptchaResponse(), message.getRemoteAddr(), captchaSecret));
-      emailService.forwardContactUsMessage(message);
-    }).start();
+    // NOTE: not enforcing captcha yet
+    httpClient.validateCaptcha(new CaptchaRequest(message.getReCaptchaResponse(), message.getRemoteAddr(), captchaSecret));
+    emailService.forwardContactUsMessage(message);
   }
 }
