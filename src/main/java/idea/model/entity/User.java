@@ -7,18 +7,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 // User is a reserved word in many databases
-@ToString
-@Getter @Setter
+@Data
 @Builder @NoArgsConstructor @AllArgsConstructor
 @Entity
 @Table(name = "user_spring_security", indexes = {

@@ -4,13 +4,10 @@ import javax.validation.constraints.NotBlank;
 import idea.model.validation.constraint.EmailOrPhone;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
-@ToString
-@Getter @Setter
+@Data
 @Builder @NoArgsConstructor @AllArgsConstructor
 public class ContactUsRequestModel {
   @EmailOrPhone

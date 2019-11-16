@@ -1,8 +1,9 @@
 package idea.repository;
 
+import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import idea.model.entity.Message;
 
 public interface MessageRepository extends CrudRepository<Message, Long> {
-  Iterable<Message> findAllByTopicId(Long id);
+  List<Message> findAllByTopicId(Long id);
 }

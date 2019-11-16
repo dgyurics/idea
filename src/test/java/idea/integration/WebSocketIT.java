@@ -11,31 +11,18 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
-@RunWith(SpringRunner.class)
-@TestPropertySource(locations = "/application-test.properties")
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class WebSocketIT {
-
-  @SuppressWarnings("unused")
-  @Value("${local.server.port}")
-  private int port;
+public class WebSocketIT extends BaseIT {
   private String URL;
   private CompletableFuture<Notification> completableFuture;
   private static final String SEND_GREETING_ENDPOINT = "/app/create";

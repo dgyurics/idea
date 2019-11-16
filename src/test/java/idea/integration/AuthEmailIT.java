@@ -109,7 +109,7 @@ public class AuthEmailIT extends BaseIT {
         .build();
     ResponseEntity<String> response = restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     assertNotNull(response);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
   }
 
   private void removeUser(String username, String password) {

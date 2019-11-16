@@ -1,8 +1,6 @@
 package idea.service.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import org.springframework.stereotype.Component;
 import idea.model.entity.Message;
 import idea.model.request.MessageRequestModel;
@@ -11,7 +9,7 @@ import idea.service.MessageService;
 
 @Component
 public class MessageServiceImpl implements MessageService {
-  private MessageRepository repository;
+  private final MessageRepository repository;
 
   MessageServiceImpl(MessageRepository repository) {
     this.repository = repository;
@@ -19,9 +17,7 @@ public class MessageServiceImpl implements MessageService {
 
   @Override
   public Collection<Message> getAllMessages(long topicId) {
-    List<Message> list = new ArrayList<Message>();
-    repository.findAllByTopicId(topicId).forEach(list::add);
-    return list;
+    return repository.findAllByTopicId(topicId);
   }
 
   @Override

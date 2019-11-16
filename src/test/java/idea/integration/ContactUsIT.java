@@ -57,7 +57,7 @@ public class ContactUsIT extends BaseIT {
     final ContactUsRequestModel model = createRequest(phoneNumber, message, reCaptchaResponse);
     final ResponseEntity<String> response = createRequest(model);
     assertNotNull(response);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
     await().atMost(10, TimeUnit.SECONDS).until(() -> greenMail.getReceivedMessages().length > 0);
 

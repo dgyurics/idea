@@ -3,12 +3,9 @@ package idea.model.request;
 import java.util.Date;
 import java.util.List;
 import idea.model.entity.User;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-@ToString
-@Getter @Setter
+@Data
 public class TopicRequestModel {
   private Long id;
   private String title;

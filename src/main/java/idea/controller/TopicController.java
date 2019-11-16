@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import idea.model.entity.Topic;
 import idea.model.request.TopicRequestModel;
@@ -29,6 +30,7 @@ public class TopicController {
     return service.getAllTopics();
   }
 
+  @ResponseStatus(HttpStatus.CREATED)
   @PutMapping
   @PreAuthorize("hasRole('ROLE_USER')")
   public ResponseEntity<Topic> createTopic(@RequestBody TopicRequestModel topic) {

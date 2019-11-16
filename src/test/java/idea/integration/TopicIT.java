@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import java.util.Collection;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -54,11 +53,6 @@ public class TopicIT extends BaseIT {
     ResponseEntity<Topic> responseCreateTopic = restTemplate.exchange(getTopicUri(), HttpMethod.PUT, new HttpEntity<>(requestBody, headers), Topic.class);
     assertNotNull(responseCreateTopic);
     assertEquals(HttpStatus.CREATED, responseCreateTopic.getStatusCode());
-  }
-
-  @Ignore
-  public void deleteTopic_noSession() {
-    // TODO
   }
 
   @Test

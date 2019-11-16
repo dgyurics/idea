@@ -39,7 +39,7 @@ public class AuthIT extends BaseIT {
 
     ResponseEntity<String> response = restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     assertNotNull(response);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
   }
 
   @Test
@@ -49,7 +49,7 @@ public class AuthIT extends BaseIT {
 
     ResponseEntity<String> response = restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     assertNotNull(response);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
     response = restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     assertNotNull(response);
@@ -63,7 +63,7 @@ public class AuthIT extends BaseIT {
 
     ResponseEntity<String> response = restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     assertNotNull(response);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
     response = restTemplate.exchange(getRegistrationUri(), HttpMethod.DELETE, new HttpEntity<>(model), String.class);
     assertNotNull(response);
@@ -83,7 +83,7 @@ public class AuthIT extends BaseIT {
 
     ResponseEntity<String> response = restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     assertNotNull(response);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
     model.setPassword("password456");
     response = restTemplate.exchange(getRegistrationUri(), HttpMethod.DELETE, new HttpEntity<>(model), String.class);
@@ -118,7 +118,7 @@ public class AuthIT extends BaseIT {
 
     ResponseEntity<String> responseRegister = restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     assertNotNull(responseRegister);
-    assertEquals(HttpStatus.OK, responseRegister.getStatusCode());
+    assertEquals(HttpStatus.CREATED, responseRegister.getStatusCode());
 
     ResponseEntity<String> responseLogin = restTemplate.exchange(getLoginUri(USERNAME, PASSWORD), HttpMethod.POST, null, String.class);
     assertNotNull(responseLogin);
