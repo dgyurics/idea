@@ -87,6 +87,12 @@
         <artifactId>reactor-spring</artifactId>
         <version>1.0.1.RELEASE</version>
     </dependency>
+    <!-- Used for converting one object to another -->
+    <dependency>
+      <groupId>org.modelmapper</groupId>
+      <artifactId>modelmapper</artifactId>
+      <version>2.3.0</version>
+    </dependency>
 
     <!-- Compile dependencies -->
     <dependency>

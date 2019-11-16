@@ -11,3 +11,9 @@ INSERT INTO message(id, topic_id, user_id, message, create_timestamp) VALUES(324
 INSERT INTO message(id, topic_id, user_id, message, create_timestamp) VALUES(324326, 144, 123, 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \''Content here, content here\', CURRENT_TIMESTAMP);
 INSERT INTO message(id, topic_id, user_id, message, create_timestamp) VALUES(324327, 144, 123, 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \''Content here, content here\', CURRENT_TIMESTAMP);
 INSERT INTO message(id, topic_id, user_id, message, create_timestamp) VALUES(324328, 10, 123, 'Chicken comes befores the egg', CURRENT_TIMESTAMP);
+
+INSERT INTO book(id, title, alt, author, src, create_timestamp) VALUES (13424, 'altruism', 'altruism', 'mattieu ricard', 'images/altruism.png', CURRENT_TIMESTAMP);
+INSERT INTO book(id, title, alt, author, src, create_timestamp) VALUES (22424, 'grit', 'grit', 'angela duckworth', 'images/grit.png', CURRENT_TIMESTAMP);
+INSERT INTO book(id, title, alt, author, src, create_timestamp) VALUES (32343, 'the alchemist', 'the alchemist', 'paulo coelho', 'images/alchemist.png', CURRENT_TIMESTAMP);
+INSERT INTO book(id, title, alt, author, src, create_timestamp) VALUES (42343, 'little prince', 'little prince', 'antoine de saint exupery', 'images/littleprince.png', CURRENT_TIMESTAMP);
+INSERT INTO book(id, title, alt, author, src, create_timestamp) VALUES (54444, 'meditations', 'meditations', 'marcus aurelius', 'images/meditations.png', CURRENT_TIMESTAMP);
