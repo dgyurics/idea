@@ -10,6 +10,10 @@ has been setup in the `application-dev.properties` file in-order to revert to a 
 #### Session management   
 Session management is normally handled by a servlet container, such as Tomcat or Jetty. However, this is not sufficient for distributed systems; thus a replacement session store/container has been setup in the `application-dev.properties` file in-order to revert to a centralized production ready session store. Details see [Spring documentation.](https://docs.spring.io/spring-session/docs/current/reference/html5/guides/boot-redis.html)
 
+#### Cache management
+By default, `simple` cache management has been setup which utilizes a `ConcurrentHashMap`. In `application-dev.properties`
+the cache manager is set to utilize `redis` in-order to revert to a production ready cache manager.
+
 #### WebSocket
 Simple text oriented message protocol (STOMP) has been setup. Currently an in-memory version is running, however it will need to be replaced by a full-fledged message broker, such as RabbitMQ, in-order to scale.
 

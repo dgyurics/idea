@@ -2,9 +2,8 @@ package idea.controller;
 
 import idea.model.entity.Book;
 import idea.model.request.BookRequestModel;
-import idea.repository.BookRepository;
+import idea.service.BookService;
 import java.util.Collection;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,31 +18,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("book")
 public class BookController {
-  private final BookRepository repository;
-  private final ModelMapper mapper;
+  private final BookService service;
 
-  public BookController(BookRepository repository, ModelMapper mapper) {
-    this.repository = repository;
-    this.mapper = mapper;
+  public BookController(BookService service) {
+    this.service = service;
   }
 
   @GetMapping
   public Collection<Book> getBooks() {
-    return repository.findAll();
+    return service.getAllBooks();
   }
 
   @ResponseStatus(HttpStatus.CREATED)
   @PutMapping
   @PreAuthorize("hasRole('ROLE_USER')")
-  public Book createBook(@RequestBody BookRequestModel bookDto) {
-    Book book = new Book();
-    mapper.map(bookDto, book);
-    return repository.save(book);
+  public Book createBook(@RequestBody BookRequestModel book) {
+    return service.createBook(book);
   }
 
   @DeleteMapping("/{id}")
   @PreAuthorize("hasRole('ROLE_USER')")
   public void deleteBook(@PathVariable long id) {
-    repository.deleteById(id);
+    service.removeBook(id);
   }
 }

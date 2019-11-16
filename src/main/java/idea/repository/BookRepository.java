@@ -7,4 +7,10 @@ import org.springframework.data.repository.CrudRepository;
 public interface BookRepository extends CrudRepository<Book, Long>  {
   @Override
   List<Book> findAll();
+
+  @Override
+  Book save(Book book);
+
+  @Override
+  void deleteById(Long id);
 }
