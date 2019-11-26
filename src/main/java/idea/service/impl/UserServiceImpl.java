@@ -6,7 +6,7 @@ import javax.ws.rs.WebApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import idea.model.entity.Reset;
@@ -20,16 +20,15 @@ import idea.utility.Validate;
 
 @Service
 public class UserServiceImpl implements UserService {
-
   private Logger logger = LoggerFactory.getLogger(UserService.class);
-  private final BCryptPasswordEncoder bCryptPasswordEncoder;
+  private final PasswordEncoder passwordEncoder;
   private final EmailService emailService;
   private final UserRepository userRepository;
   private final ResetRepository resetRepository;
 
-  UserServiceImpl(UserRepository repository, EmailService emailService,
-      ResetRepository resetRepository) {
-    this.bCryptPasswordEncoder = new BCryptPasswordEncoder();
+  UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository repository,
+      EmailService emailService, ResetRepository resetRepository) {
+    this.passwordEncoder = passwordEncoder;
     this.emailService = emailService;
     this.userRepository = repository;
     this.resetRepository = resetRepository;
@@ -40,7 +39,7 @@ public class UserServiceImpl implements UserService {
     validateUserNotExist(user);
     // validateRegistrationCode(user.getRegistrationCode());
     User userEntity = new User();
-    userEntity.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+    userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
     userEntity.setUsername(user.getUsername());
     userEntity.setActive(true);
     userEntity.setRole("USER");
@@ -92,7 +91,7 @@ public class UserServiceImpl implements UserService {
   }
 
   private void updateUser(User existingUser, String newPassword) {
-    existingUser.setPassword(bCryptPasswordEncoder.encode(newPassword));
+    existingUser.setPassword(passwordEncoder.encode(newPassword));
     userRepository.save(existingUser);
     resetRepository.invalidateToken(existingUser.getUsername());
   }
@@ -112,8 +111,7 @@ public class UserServiceImpl implements UserService {
 
   private void validateRegistrationCode(int registrationCode) {
     // TODO create tool to generate unique codes and validate per user
-    Validate.isTrue(123456 == registrationCode,
-        "Invalid registration code", 401);
+    Validate.isTrue(123456 == registrationCode,"Invalid registration code", 401);
   }
 
   private Long validateDeleteRequest(UserRequestModel registrationRequest)
@@ -121,7 +119,7 @@ public class UserServiceImpl implements UserService {
     Optional<User> user = userRepository.findByUsername(registrationRequest.getUsername());
     Validate.isTrue(user.isPresent(), "User does not exist", 400);
     Validate.isTrue(
-        bCryptPasswordEncoder.matches(registrationRequest.getPassword(), user.get().getPassword()),
+        passwordEncoder.matches(registrationRequest.getPassword(), user.get().getPassword()),
         "Passwords did not match", 400);
     return user.get().getId();
   }

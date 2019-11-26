@@ -31,13 +31,13 @@ public class BookController {
 
   @ResponseStatus(HttpStatus.CREATED)
   @PutMapping
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public Book createBook(@RequestBody BookRequestModel book) {
     return service.createBook(book);
   }
 
   @DeleteMapping("/{id}")
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public void deleteBook(@PathVariable long id) {
     service.removeBook(id);
   }

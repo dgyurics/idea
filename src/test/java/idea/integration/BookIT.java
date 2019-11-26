@@ -10,9 +10,13 @@ import idea.model.request.UserRequestModel;
 import idea.service.BookService;
 import java.util.Collection;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,10 +27,20 @@ import org.springframework.http.ResponseEntity;
 public class BookIT extends BaseIT {
   private static final String USERNAME = "username@gmail.com";
   private static final String PASSWORD = "password";
+  private static final String USERNAME_ADMIN = "lagom3922@gmail.com";
+  private static final String PASSWORD_ADMIN = "password123";
   private static final Integer REGISTRATION_CODE = 123456;
 
+  @Autowired
+  ApplicationContext context;
   @SpyBean
   BookService bookService;
+
+  @Before
+  public void before() throws Exception {
+    CommandLineRunner runner = context.getBean(CommandLineRunner.class);
+    runner.run( USERNAME_ADMIN, PASSWORD_ADMIN);
+  }
 
   @After
   public void after() {
@@ -44,11 +58,7 @@ public class BookIT extends BaseIT {
 
   @Test
   public void uploadBook() {
-    UserRequestModel model = UserRequestModel
-        .builder().username(USERNAME).password(PASSWORD).registrationCode(REGISTRATION_CODE).build();
-
-    restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
-    final ResponseEntity<String> response = restTemplate.exchange(getLoginUri(USERNAME, PASSWORD), HttpMethod.POST, null, String.class);
+    final ResponseEntity<String> response = restTemplate.exchange(getLoginUri(USERNAME_ADMIN, PASSWORD_ADMIN), HttpMethod.POST, null, String.class);
     final String session = response.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
 
     HttpHeaders headers = new HttpHeaders();
@@ -76,11 +86,7 @@ public class BookIT extends BaseIT {
     assertNotNull(response.getBody());
     assertTrue(response.getBody().size() >= 5);
 
-    UserRequestModel model = UserRequestModel
-        .builder().username(USERNAME).password(PASSWORD).registrationCode(REGISTRATION_CODE).build();
-
-    restTemplate.exchange(getRegistrationUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
-    final ResponseEntity<String> loginResponse = restTemplate.exchange(getLoginUri(USERNAME, PASSWORD), HttpMethod.POST, null, String.class);
+    final ResponseEntity<String> loginResponse = restTemplate.exchange(getLoginUri(USERNAME_ADMIN, PASSWORD_ADMIN), HttpMethod.POST, null, String.class);
     final String session = loginResponse.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
 
     HttpHeaders headers = new HttpHeaders();

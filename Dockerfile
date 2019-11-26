@@ -10,4 +10,4 @@ FROM openjdk:11
 WORKDIR /app
 COPY --from=build /app/target/idea-*.jar idea.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "idea.jar"]
+ENTRYPOINT ["java", "-jar", "idea.jar", "lagom3922@gmail.com", "password123"]
