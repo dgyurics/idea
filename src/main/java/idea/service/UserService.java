@@ -10,4 +10,5 @@ public interface UserService {
   void requestResetPassword(String email);
   void validateResetCode(long userId, UserRequestModel user);
   void resetPassword(long userId, UserRequestModel user);
+  String getRole(String username);
 }

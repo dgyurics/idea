@@ -1,21 +1,24 @@
 package idea.controller;
 
+import idea.model.request.UserRequestModel;
+import idea.model.validation.group.NewUserGroup;
+import idea.model.validation.group.PasswordConfirmationGroup;
+import idea.model.validation.group.PasswordRequestGroup;
+import idea.model.validation.group.RemoveUserGroup;
 import idea.model.validation.group.ResetCodeValidationGroup;
+import idea.service.UserService;
+import java.security.Principal;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import idea.model.request.UserRequestModel;
-import idea.model.validation.group.NewUserGroup;
-import idea.model.validation.group.PasswordConfirmationGroup;
-import idea.model.validation.group.PasswordRequestGroup;
-import idea.model.validation.group.RemoveUserGroup;
-import idea.service.UserService;
 
 @RestController
 @RequestMapping
@@ -54,5 +57,11 @@ public class AuthController {
       @RequestBody @Validated(PasswordConfirmationGroup.class) UserRequestModel user,
       @PathVariable long userId) {
     service.resetPassword(userId, user);
+  }
+
+  @GetMapping("/authorities")
+  @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+  public String getAuthorities(Principal principal) {
+    return service.getRole(principal.getName());
   }
 }

@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
     emailResetCode(username, user.get().getId().toString(), resetCode);
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   @Override
   public void validateResetCode(long userId, UserRequestModel user) {
     final Optional<User> userToUpdate = userRepository.findById(userId);
@@ -88,6 +88,14 @@ public class UserServiceImpl implements UserService {
     Validate.isTrue(userToUpdate.isPresent(), "Invalid user ID", 400);
     validateResetCode(userToUpdate.get().getUsername(), user.getResetCode());
     updateUser(userToUpdate.get(), user.getPassword());
+  }
+
+  @Transactional(readOnly = true)
+  @Override
+  public String getRole(String username) {
+    Optional<User> user = userRepository.findByUsername(username);
+    if(user.isPresent()) return user.get().getRole();
+    return null;
   }
 
   private void updateUser(User existingUser, String newPassword) {

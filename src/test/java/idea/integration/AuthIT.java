@@ -3,19 +3,35 @@ package idea.integration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import javax.ws.rs.core.HttpHeaders;
+
+import idea.model.request.UserRequestModel;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import idea.model.request.UserRequestModel;
 
 public class AuthIT extends BaseIT {
+  private static final String USERNAME_ADMIN = "lagom3922@gmail.com";
+  private static final String PASSWORD_ADMIN = "password123";
   private static final String USERNAME = "username@gmail.com";
   private static final String PASSWORD = "password";
   private static final Integer REGISTRATION_CODE = 123456;
+
+  @Autowired
+  ApplicationContext context;
+
+  @Before
+  public void before() throws Exception {
+    CommandLineRunner runner = context.getBean(CommandLineRunner.class);
+    runner.run( USERNAME_ADMIN, PASSWORD_ADMIN);
+  }
 
   @After
   public void after() {
@@ -125,6 +141,18 @@ public class AuthIT extends BaseIT {
     assertEquals(HttpStatus.OK, responseLogin.getStatusCode());
     assertNotNull(responseLogin.getHeaders());
     assertNotNull(responseLogin.getHeaders().getFirst(HttpHeaders.SET_COOKIE));
+  }
+
+  @Test
+  public void authorities() {
+    final ResponseEntity<String> loginResponse = restTemplate.exchange(getLoginUri(USERNAME_ADMIN, PASSWORD_ADMIN), HttpMethod.POST, null, String.class);
+    final String session = loginResponse.getHeaders().getFirst(org.springframework.http.HttpHeaders.SET_COOKIE);
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Cookie", session);
+    ResponseEntity<String> response = restTemplate.exchange(getAuthoritiesUri(), HttpMethod.GET, new HttpEntity<>(null, headers), String.class);
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("ADMIN", response.getBody());
   }
 
   private void removeUser(String username, String password) {

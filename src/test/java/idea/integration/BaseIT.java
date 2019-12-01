@@ -42,6 +42,10 @@ public abstract class BaseIT {
     return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/forgot-password").build().toUri();
   }
 
+  URI getAuthoritiesUri() {
+    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/authorities").build().toUri();
+  }
+
   URI getResetPasswordUri(String userId) {
     return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/forgot-password/{userId}").buildAndExpand(userId).toUri();
   }
