@@ -3,6 +3,7 @@ package idea.config.security;
 import java.util.Arrays;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -25,10 +26,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+  private final boolean production;
+  private final Environment environment;
   private final UserDetailsService userDetailsService;
 
-  WebSecurityConfig(UserDetailsService userDetailsService) {
+  WebSecurityConfig(Environment environment, UserDetailsService userDetailsService) {
+    this.environment = environment;
     this.userDetailsService = userDetailsService;
+    production = Arrays.stream(environment.getActiveProfiles()).anyMatch(env -> env.equalsIgnoreCase("prod"));
   }
 
   @Override
@@ -69,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       configuration.setAllowedOrigins(Arrays.asList("https://lagom.life", "http://localhost:8082"));
       configuration.addAllowedHeader("*");
       configuration.addAllowedMethod("*");
-      configuration.setAllowCredentials(true);
+      configuration.setAllowCredentials(!production);
       source.registerCorsConfiguration("/**", configuration);
       return source;
   }
