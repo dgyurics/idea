@@ -19,15 +19,14 @@ public class Book {
   @Column(nullable = false)
   private String title;
 
-  @Column(nullable = false)
   private String alt;
 
   private String author;
 
-  @Column(nullable = false)
+  @Column(nullable = false, length=500)
   private String src;
 
-  @Column(nullable = false, updatable = false)
+  @Column
   @CreationTimestamp
   private Date createTimestamp;
 

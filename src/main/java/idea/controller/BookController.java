@@ -36,6 +36,7 @@ public class BookController {
     return service.createBook(book);
   }
 
+  @ResponseStatus(HttpStatus.OK)
   @DeleteMapping("/{id}")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public void deleteBook(@PathVariable long id) {
