@@ -1,5 +1,6 @@
-package idea.service.impl;
+package idea.config.security;
 
+import idea.repository.RefreshRepository;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.ws.rs.WebApplicationException;
@@ -11,11 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import idea.model.entity.Reset;
 import idea.model.entity.User;
-import idea.model.request.UserRequestModel;
+import idea.model.dto.UserRequestModel;
 import idea.repository.ResetRepository;
 import idea.repository.UserRepository;
 import idea.service.EmailService;
-import idea.service.UserService;
 import idea.utility.Validate;
 
 @Service
@@ -25,15 +25,19 @@ public class UserServiceImpl implements UserService {
   private final EmailService emailService;
   private final UserRepository userRepository;
   private final ResetRepository resetRepository;
+  private final RefreshRepository refreshRepository;
 
   UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository repository,
-      EmailService emailService, ResetRepository resetRepository) {
+      EmailService emailService, ResetRepository resetRepository,
+      RefreshRepository refreshRepository) {
     this.passwordEncoder = passwordEncoder;
     this.emailService = emailService;
     this.userRepository = repository;
     this.resetRepository = resetRepository;
+    this.refreshRepository = refreshRepository;
   }
 
+  @Transactional
   @Override
   public User createNewUser(UserRequestModel user) throws WebApplicationException {
     validateUserNotExist(user);
@@ -84,18 +88,13 @@ public class UserServiceImpl implements UserService {
   @Override
   public void resetPassword(long userId, UserRequestModel user) {
     // TODO: invalidate after after 15 minutes has elapsed
+    // FIXME: refactor
     final Optional<User> userToUpdate = userRepository.findById(userId);
     Validate.isTrue(userToUpdate.isPresent(), "Invalid user ID", 400);
     validateResetCode(userToUpdate.get().getUsername(), user.getResetCode());
     updateUser(userToUpdate.get(), user.getPassword());
-  }
-
-  @Transactional(readOnly = true)
-  @Override
-  public String getRole(String username) {
-    Optional<User> user = userRepository.findByUsername(username);
-    if(user.isPresent()) return user.get().getRole();
-    return null;
+    // remove JWT RefreshToken
+    refreshRepository.deleteByUserId(userToUpdate.get().getId());
   }
 
   private void updateUser(User existingUser, String newPassword) {

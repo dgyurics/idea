@@ -10,8 +10,8 @@ import idea.model.entity.User;
 public class UserDetailsImpl extends User implements UserDetails {
   private static final long serialVersionUID = -4827082875335444299L;
 
-  public UserDetailsImpl(final User users) {
-    super(users);
+  public UserDetailsImpl(final User user) {
+    super(user);
   }
 
   @Override

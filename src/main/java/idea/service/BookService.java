@@ -1,7 +1,7 @@
 package idea.service;
 
 import idea.model.entity.Book;
-import idea.model.request.BookRequestModel;
+import idea.model.dto.BookRequestModel;
 import java.util.Collection;
 
 public interface BookService {

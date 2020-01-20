@@ -19,7 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.util.ServerSetupTest;
-import idea.model.request.UserRequestModel;
+import idea.model.dto.UserRequestModel;
 
 public class AuthEmailIT extends BaseIT {
   private static final String USERNAME = "myemail@yahoo.com";
@@ -45,7 +45,6 @@ public class AuthEmailIT extends BaseIT {
     greenMail.reset();
   }
 
-  // FIXME refactor
   @Test
   public void requestPasswordChange() throws MessagingException, IOException {
     requestPasswordReset(USERNAME, HttpStatus.OK);
@@ -66,6 +65,8 @@ public class AuthEmailIT extends BaseIT {
     assertEquals(401, login(USERNAME, PASSWORD).getStatusCodeValue());
     assertEquals(200, login(USERNAME, "newpassword123").getStatusCodeValue());
 
+    // TODO validate refresh token has been removed/expired
+
     // try to use reset code again
     passwordReset(resetCode, userId, "newpassword1234", HttpStatus.BAD_REQUEST);
     assertEquals(401, login(USERNAME, PASSWORD).getStatusCodeValue());
@@ -81,7 +82,9 @@ public class AuthEmailIT extends BaseIT {
   }
 
   private ResponseEntity<String> login(String username, String password) {
-     return restTemplate.exchange(getLoginUri(username, password), HttpMethod.POST, null, String.class);
+    UserRequestModel model = UserRequestModel
+        .builder().username(username).password(password).build();
+     return restTemplate.exchange(getLoginUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
   }
   private void passwordReset(String resetCode, String userId, String newPassword, HttpStatus expectedHttpStatus) {
     final UserRequestModel model = UserRequestModel.builder()

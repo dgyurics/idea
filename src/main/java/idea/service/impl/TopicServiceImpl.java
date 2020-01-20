@@ -3,13 +3,13 @@ package idea.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.springframework.stereotype.Component;
 import idea.model.entity.Topic;
-import idea.model.request.TopicRequestModel;
+import idea.model.dto.TopicRequestModel;
 import idea.repository.TopicRepository;
 import idea.service.TopicService;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class TopicServiceImpl implements TopicService {
   private TopicRepository repository;
 

@@ -2,11 +2,11 @@ package idea.service.impl;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Component;
-import idea.model.request.ContactUsRequestModel;
+import idea.model.dto.ContactUsRequestModel;
 import idea.service.EmailService;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class EmailServiceImpl implements EmailService {
   private final JavaMailSender emailSender;
 

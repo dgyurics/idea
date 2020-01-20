@@ -1,7 +1,7 @@
 package idea.controller;
 
 import idea.model.entity.Book;
-import idea.model.request.BookRequestModel;
+import idea.model.dto.BookRequestModel;
 import idea.service.BookService;
 import java.util.Collection;
 import org.springframework.http.HttpStatus;

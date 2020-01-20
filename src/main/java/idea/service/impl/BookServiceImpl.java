@@ -1,16 +1,16 @@
 package idea.service.impl;
 
 import idea.model.entity.Book;
-import idea.model.request.BookRequestModel;
+import idea.model.dto.BookRequestModel;
 import idea.repository.BookRepository;
 import idea.service.BookService;
 import java.util.Collection;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class BookServiceImpl implements BookService {
   private final BookRepository repository;
   private final ModelMapper mapper;

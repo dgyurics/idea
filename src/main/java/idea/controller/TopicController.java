@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import idea.model.entity.Topic;
-import idea.model.request.TopicRequestModel;
+import idea.model.dto.TopicRequestModel;
 import idea.service.TopicService;
 
 @RestController

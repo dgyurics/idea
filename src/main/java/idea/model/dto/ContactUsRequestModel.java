@@ -1,4 +1,4 @@
-package idea.model.request;
+package idea.model.dto;
 
 import javax.validation.constraints.NotBlank;
 import idea.model.validation.constraint.EmailOrPhone;

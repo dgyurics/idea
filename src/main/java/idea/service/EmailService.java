@@ -1,7 +1,7 @@
 package idea.service;
 
 import org.springframework.mail.SimpleMailMessage;
-import idea.model.request.ContactUsRequestModel;
+import idea.model.dto.ContactUsRequestModel;
 
 public interface EmailService {
   void send(SimpleMailMessage message);
