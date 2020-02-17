@@ -1,6 +1,7 @@
 package idea.config.security;
 
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,12 +11,9 @@ import idea.model.entity.User;
 import idea.repository.UserRepository;
 
 @Service
+@RequiredArgsConstructor
 public class UserDetailServiceImpl implements UserDetailsService {
-  private UserRepository repository;
-
-  public UserDetailServiceImpl(UserRepository usersRepository) {
-    this.repository = usersRepository;
-  }
+  private final UserRepository repository;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

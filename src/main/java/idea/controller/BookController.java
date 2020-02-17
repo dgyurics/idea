@@ -4,6 +4,7 @@ import idea.model.entity.Book;
 import idea.model.dto.BookRequestModel;
 import idea.service.BookService;
 import java.util.Collection;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,12 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("book")
+@RequiredArgsConstructor
 public class BookController {
   private final BookService service;
-
-  public BookController(BookService service) {
-    this.service = service;
-  }
 
   @GetMapping
   public Collection<Book> getBooks() {

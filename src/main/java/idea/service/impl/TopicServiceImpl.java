@@ -7,15 +7,13 @@ import idea.model.entity.Topic;
 import idea.model.dto.TopicRequestModel;
 import idea.repository.TopicRepository;
 import idea.service.TopicService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class TopicServiceImpl implements TopicService {
-  private TopicRepository repository;
-
-  TopicServiceImpl(TopicRepository repository) {
-    this.repository = repository;
-  }
+  private final TopicRepository repository;
 
   @Override
   public Collection<Topic> getAllTopics() {

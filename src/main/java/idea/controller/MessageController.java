@@ -1,6 +1,7 @@
 package idea.controller;
 
 import java.util.Collection;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,12 +18,9 @@ import idea.service.MessageService;
 
 @RestController
 @RequestMapping("message")
+@RequiredArgsConstructor
 public class MessageController {
-  MessageService service;
-
-  MessageController(MessageService service) {
-    this.service = service;
-  }
+  private final MessageService service;
 
   @GetMapping("/{topicId}")
   public Collection<Message> getMessages(@PathVariable long topicId) {

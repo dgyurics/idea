@@ -4,6 +4,7 @@ import idea.repository.RefreshRepository;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.ws.rs.WebApplicationException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -19,6 +20,7 @@ import idea.service.EmailService;
 import idea.utility.Validate;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
   private Logger logger = LoggerFactory.getLogger(UserService.class);
   private final PasswordEncoder passwordEncoder;
@@ -26,16 +28,6 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   private final ResetRepository resetRepository;
   private final RefreshRepository refreshRepository;
-
-  UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository repository,
-      EmailService emailService, ResetRepository resetRepository,
-      RefreshRepository refreshRepository) {
-    this.passwordEncoder = passwordEncoder;
-    this.emailService = emailService;
-    this.userRepository = repository;
-    this.resetRepository = resetRepository;
-    this.refreshRepository = refreshRepository;
-  }
 
   @Transactional
   @Override

@@ -1,6 +1,7 @@
 package idea.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,13 +14,9 @@ import idea.service.ContactService;
 
 @RestController
 @RequestMapping("contact")
+@RequiredArgsConstructor
 public class ContactController {
-
   private final ContactService service;
-
-  ContactController(ContactService service) {
-    this.service = service;
-  }
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping

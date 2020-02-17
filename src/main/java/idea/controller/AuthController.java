@@ -11,6 +11,7 @@ import idea.model.validation.group.RemoveUserGroup;
 import idea.model.validation.group.ResetCodeValidationGroup;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,16 +30,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping
+@RequiredArgsConstructor
 public class AuthController {
   private final UserService userService;
   private final JwtTokenService jwtService;
   private final AuthenticationManager authenticationManager;
-
-  AuthController(UserService service, JwtTokenService jwtService, AuthenticationManager authenticationManager) {
-    this.userService = service;
-    this.jwtService = jwtService;
-    this.authenticationManager = authenticationManager;
-  }
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/register")

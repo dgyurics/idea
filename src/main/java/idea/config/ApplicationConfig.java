@@ -23,6 +23,7 @@ public class ApplicationConfig {
   public ModelMapper modelMapper() {
     return new ModelMapper();
   }
+
   @Bean
   public Clock clock() {
     return Clock.systemDefaultZone();
