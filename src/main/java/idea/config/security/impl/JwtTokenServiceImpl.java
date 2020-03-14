@@ -1,6 +1,6 @@
-package idea.config.security;
+package idea.config.security.impl;
 
-import idea.model.entity.Refresh;
+import idea.config.security.JwtTokenService;
 import idea.model.entity.User;
 import idea.repository.RefreshRepository;
 import idea.repository.UserRepository;
@@ -8,9 +8,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.time.Clock;
-import java.util.Optional;
-import java.util.UUID;
-import javax.ws.rs.WebApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,7 +46,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     return Jwts.builder()
         .claim(CLAIM_ID, userDetails.getId())
         .claim(CLAIM_USERNAME, userDetails.getUsername())
-        .claim(CLAIM_ADMIN, userDetails.getRole().equalsIgnoreCase("admin"))
+        .claim(CLAIM_ADMIN, userDetails.getRole().equals("ADMIN"))
         .claim(Claims.ISSUED_AT, timeInSeconds)
         .claim(Claims.EXPIRATION, timeInSeconds + jwtExpirationInSec)
         .setIssuer(CLAIM_ISSUER)
@@ -63,35 +60,12 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     return Jwts.builder()
         .claim(CLAIM_ID, user.getId())
         .claim(CLAIM_USERNAME, user.getUsername())
-        .claim(CLAIM_ADMIN, false)
+        .claim(CLAIM_ADMIN, user.getRole().equals("ADMIN"))
         .setIssuer(CLAIM_ISSUER)
         .claim(Claims.ISSUED_AT, timeInSeconds)
         .claim(Claims.EXPIRATION, timeInSeconds + jwtExpirationInSec)
         .signWith(SignatureAlgorithm.HS512, jwtSecret)
         .compact();
-  }
-
-  @Override
-  public String generateToken(UUID refreshToken) {
-    final User user = refreshTokenRepository.findById(refreshToken)
-        .orElseThrow(() -> new WebApplicationException("Invalid refresh token " + refreshToken, 403))
-        .getUser();
-    return generateToken(user);
-  }
-
-  @Override
-  public UUID generateRefreshToken(String username) {
-    final Optional<Refresh> entry = refreshTokenRepository.findByUserUsername(username);
-    if(entry.isPresent()) return entry.get().getId();
-    final User usr = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException("Unknown user " + username));
-    return refreshTokenRepository.save(Refresh.builder()
-        .user(usr)
-        .build()).getId();
-  }
-
-  @Override
-  public void invalidateRefreshToken(String username) {
-    refreshTokenRepository.findByUserUsername(username).ifPresent(refreshTokenRepository::delete);
   }
 
   @Override

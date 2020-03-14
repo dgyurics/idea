@@ -1,4 +1,4 @@
-package idea.config.security;
+package idea.config.security.impl;
 
 import java.util.Collection;
 import java.util.Collections;

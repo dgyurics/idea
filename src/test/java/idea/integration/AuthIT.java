@@ -2,7 +2,6 @@ package idea.integration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -12,7 +11,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import java.time.Clock;
 import java.util.Date;
-import java.util.UUID;
 import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.After;
@@ -67,14 +65,11 @@ public class AuthIT extends BaseIT {
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     assertNotNull(response.getBody());
 
-    /* validate JWT token */
-    final Claims claims = decodeJWT(response.getBody());
-    assertEquals(DOMAIN, claims.getIssuer());
-    assertFalse((Boolean) claims.get("admin"));
-    assertNotNull(claims.get("id"));
-    assertEquals(USERNAME, claims.get("username"));
-    assertTrue(new Date().after(claims.getIssuedAt()));
-    assertTrue(new Date().before(claims.getExpiration()));
+    /* verify refresh token received, and then some */
+    verifyRefreshToken(response);
+
+    /* verify JWT token received, and then some */
+    verifyJwtToken(response, USERNAME, false);
   }
 
   @Test
@@ -100,14 +95,11 @@ public class AuthIT extends BaseIT {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
 
-    /* validate JWT token */
-    final Claims claims = decodeJWT(response.getBody());
-    assertEquals(DOMAIN, claims.getIssuer());
-    assertTrue((Boolean) claims.get("admin"));
-    assertNotNull(claims.get("id"));
-    assertEquals(USERNAME_ADMIN, claims.get("username"));
-    assertTrue(new Date().after(claims.getIssuedAt()));
-    assertTrue(new Date().before(claims.getExpiration()));
+    /* verify refresh token received, and then some */
+    verifyRefreshToken(response);
+
+    /* verify JWT token received, and then some */
+    verifyJwtToken(response, USERNAME_ADMIN, true);
   }
 
   @Test
@@ -210,7 +202,6 @@ public class AuthIT extends BaseIT {
     ResponseEntity<String> response = restTemplate.exchange(getRegistrationUri(), HttpMethod.DELETE, new HttpEntity<>(model), String.class);
     assertNotNull(response);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-
   }
 
   @Test
@@ -218,22 +209,19 @@ public class AuthIT extends BaseIT {
     // login to get new JWT token
     UserRequestModel model = UserRequestModel.builder()
         .username(USERNAME_ADMIN).password(PASSWORD_ADMIN).build();
-    ResponseEntity<String> response_JwtToken = restTemplate.exchange(getLoginUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
-    assertNotNull(response_JwtToken);
-    assertEquals(HttpStatus.OK, response_JwtToken.getStatusCode());
-    assertNotNull(response_JwtToken.getBody());
+    ResponseEntity<String> response = restTemplate.exchange(getLoginUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
 
     // create refresh token
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", "Bearer " + response_JwtToken.getBody());
-
-    ResponseEntity<UUID> response_RefreshToken = restTemplate.exchange(getRefreshUri(), HttpMethod.GET, new HttpEntity<>(headers), UUID.class);
-    assertNotNull(response_RefreshToken);
-    assertEquals(HttpStatus.CREATED, response_RefreshToken.getStatusCode());
-    assertNotNull(response_RefreshToken.getBody());
+    headers.add("Authorization", "Bearer " + response.getBody());
+    // the controller reads this and sees multiple cookies
+    headers.add("Cookie", verifyRefreshToken(response));
 
     // validate current JWT token works
-    ResponseEntity<String> response = restTemplate.exchange(getWhoAmIUri(),HttpMethod.GET, new HttpEntity<>(headers), String.class);
+    response = restTemplate.exchange(getWhoAmIUri(),HttpMethod.GET, new HttpEntity<>(headers), String.class);
     assertNotNull(response);
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -243,15 +231,14 @@ public class AuthIT extends BaseIT {
     assertNotNull(response);
     assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
 
-    // obtain new JWT token using refresh token
-    final UUID refreshToken = response_RefreshToken.getBody();
-    response_JwtToken = restTemplate.exchange(getRefreshJwtUri(refreshToken), HttpMethod.GET, null, String.class);
-    assertNotNull(response_JwtToken);
-    assertEquals(HttpStatus.OK, response_JwtToken.getStatusCode());
-    assertNotNull(response_JwtToken.getBody());
+    // obtain new JWT token using refresh cookie/token
+    response = restTemplate.exchange(getRefreshUri(), HttpMethod.GET, new HttpEntity<>(headers), String.class);
+    assertNotNull(response);
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    assertNotNull(response.getBody());
 
     // try to use new JWT token
-    headers.set("Authorization", "Bearer " + response_JwtToken.getBody());
+    headers.set("Authorization", "Bearer " + response.getBody());
     response = restTemplate.exchange(getWhoAmIUri(),HttpMethod.GET, new HttpEntity<>(headers), String.class);
     assertNotNull(response);
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -267,5 +254,28 @@ public class AuthIT extends BaseIT {
     UserRequestModel model = UserRequestModel.builder()
         .username(username).password(password).build();
     restTemplate.exchange(getRegistrationUri(), HttpMethod.DELETE, new HttpEntity<>(model), String.class);
+  }
+
+  private void verifyJwtToken(ResponseEntity<String> res,
+      String username,
+      boolean isAdmin) {
+    final Claims claims = decodeJWT(res.getBody());
+    assertEquals(DOMAIN, claims.getIssuer());
+    assertEquals(isAdmin, (Boolean) claims.get("admin"));
+    assertNotNull(claims.get("id"));
+    assertEquals(username, claims.get("username"));
+    assertTrue(new Date().after(claims.getIssuedAt()));
+    assertTrue(new Date().before(claims.getExpiration()));
+  }
+
+  private String verifyRefreshToken(ResponseEntity res) {
+    // respoonse.headers.['Set-Cookie'] (list)
+    // user=6946d0d0-8f52-4d3c-9e71-d58ebec67931;
+    // Max-Age=2678400; Expires=Wed, 01-Apr-2020 20:10:31 GMT;
+    // Domain=lagom.life; Path=/
+    assertTrue(res.getHeaders().containsKey("Set-Cookie"));
+    // this returns a string
+    assertNotNull(res.getHeaders().getFirst(HttpHeaders.SET_COOKIE));
+    return res.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
   }
 }

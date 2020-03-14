@@ -1,6 +1,7 @@
 package idea.integration;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.UUID;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +44,6 @@ public abstract class BaseIT {
     return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/forgot-password").build().toUri();
   }
 
-  URI getAuthoritiesUri() {
-    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/authorities").build().toUri();
-  }
-
   URI getResetPasswordUri(String userId) {
     return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/forgot-password/{userId}").buildAndExpand(userId).toUri();
   }
@@ -59,16 +56,12 @@ public abstract class BaseIT {
     return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/health").build().toUri();
   }
 
-  URI getRefreshJwtUri(UUID refreshToken) {
-    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/refresh-token/{refreshToken}").buildAndExpand(refreshToken).toUri();
+  URI getLoginUri() {
+    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/login").build().toUri();
   }
 
   URI getRefreshUri() {
-    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/refresh-token").build().toUri();
-  }
-
-  URI getLoginUri() {
-    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/login").build().toUri();
+    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/refresh").build().toUri();
   }
 
   URI getWhoAmIUri() {

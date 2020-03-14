@@ -1,4 +1,4 @@
-package idea.config.security;
+package idea.config.security.impl;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import idea.config.security.UserDetailsImpl;
 import idea.model.entity.User;
 import idea.repository.UserRepository;
 

@@ -1,8 +1,10 @@
 package idea.controller;
 
 import idea.config.security.JwtTokenService;
+import idea.config.security.RefreshTokenService;
 import idea.config.security.UserService;
 import idea.model.dto.UserRequestModel;
+import idea.model.entity.User;
 import idea.model.validation.group.AuthenticateGroup;
 import idea.model.validation.group.NewUserGroup;
 import idea.model.validation.group.PasswordConfirmationGroup;
@@ -11,6 +13,7 @@ import idea.model.validation.group.RemoveUserGroup;
 import idea.model.validation.group.ResetCodeValidationGroup;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,40 +38,39 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
   private final UserService userService;
   private final JwtTokenService jwtService;
+  private final RefreshTokenService refreshService;
   private final AuthenticationManager authenticationManager;
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/register")
-  public String register(@RequestBody @Validated(NewUserGroup.class) UserRequestModel user) {
-    return jwtService.generateToken(userService.createNewUser(user));
-  }
-
-  @ResponseStatus(HttpStatus.OK)
-  @GetMapping("/refresh-token/{tokenId}")
-  public String getJwtToken(@PathVariable UUID tokenId) {
-    return jwtService.generateToken(tokenId);
-  }
-
-  @ResponseStatus(HttpStatus.CREATED)
-  @GetMapping("/refresh-token")
-  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-  public UUID getRefreshToken(HttpServletRequest req) {
-    return jwtService.generateRefreshToken(req.getRemoteUser());
+  public String register(@RequestBody @Validated(NewUserGroup.class) UserRequestModel user, HttpServletResponse res) {
+    final User newUser = userService.createNewUser(user);
+    refreshService.injectToken(newUser, res);
+    return jwtService.generateToken(newUser);
   }
 
   @ResponseStatus(HttpStatus.OK)
   @PostMapping("/logout")
   @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-  public void logout(HttpServletRequest req) {
-    jwtService.invalidateRefreshToken(req.getRemoteUser());
+  public void logout(HttpServletRequest req, HttpServletResponse res) {
+    refreshService.expireToken(req, res);
+
+    SecurityContextHolder.clearContext();
   }
 
   @ResponseStatus(HttpStatus.OK)
   @PostMapping("/login")
-  public String login(@RequestBody @Validated(AuthenticateGroup.class) UserRequestModel user) {
+  public String login(@RequestBody @Validated(AuthenticateGroup.class) UserRequestModel user, HttpServletResponse res) {
     final Authentication authentication = authenticationManager
         .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword()));
+    refreshService.injectToken(authentication, res);
     return jwtService.generateToken(authentication);
+  }
+
+  @ResponseStatus(HttpStatus.CREATED)
+  @GetMapping("/refresh")
+  public String refresh(@CookieValue("refresh") String cookie) {
+    return jwtService.generateToken(refreshService.getUser(UUID.fromString(cookie)));
   }
 
   // FIXME: Use security annotations to validate request permissions

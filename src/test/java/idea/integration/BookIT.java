@@ -45,6 +45,9 @@ public class BookIT extends BaseIT {
     UserRequestModel model = UserRequestModel.builder()
         .username(USERNAME_ADMIN).password(PASSWORD_ADMIN).build();
     final ResponseEntity<String> response = restTemplate.exchange(getLoginUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+
     HttpHeaders headers = new HttpHeaders();
     headers.add("Authorization", "Bearer " + response.getBody());
 

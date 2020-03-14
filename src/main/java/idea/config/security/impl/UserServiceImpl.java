@@ -1,5 +1,6 @@
-package idea.config.security;
+package idea.config.security.impl;
 
+import idea.config.security.UserService;
 import idea.repository.RefreshRepository;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
