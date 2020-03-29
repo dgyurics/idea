@@ -1,18 +1,16 @@
 package idea.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Component;
-import idea.model.request.ContactUsRequestModel;
+import idea.model.dto.ContactUsRequestModel;
 import idea.service.EmailService;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
+@RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
   private final JavaMailSender emailSender;
-
-  EmailServiceImpl(JavaMailSender emailSender) {
-    this.emailSender= emailSender;
-  }
 
   @Override
   public void forwardContactUsMessage(ContactUsRequestModel message) {

@@ -1,5 +1,6 @@
 package idea.model.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 @Data
 @Entity(name = "book")
-public class Book {
+public class Book implements Serializable {
   @Id
   @GeneratedValue
   private Long id;

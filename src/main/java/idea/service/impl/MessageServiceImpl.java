@@ -1,19 +1,17 @@
 package idea.service.impl;
 
 import java.util.Collection;
-import org.springframework.stereotype.Component;
 import idea.model.entity.Message;
-import idea.model.request.MessageRequestModel;
+import idea.model.dto.MessageRequestModel;
 import idea.repository.MessageRepository;
 import idea.service.MessageService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
+@RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
   private final MessageRepository repository;
-
-  MessageServiceImpl(MessageRepository repository) {
-    this.repository = repository;
-  }
 
   @Override
   public Collection<Message> getAllMessages(long topicId) {

@@ -24,7 +24,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.util.ServerSetupTest;
-import idea.model.request.ContactUsRequestModel;
+import idea.model.dto.ContactUsRequestModel;
 
 /**
  * Validates the correct HTTP requests are made when a new contact us message

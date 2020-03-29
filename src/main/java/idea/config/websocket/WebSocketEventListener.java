@@ -1,5 +1,6 @@
 package idea.config.websocket;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -11,14 +12,10 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 @Component
+@RequiredArgsConstructor
 public class WebSocketEventListener {
-
   private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
   private final SimpMessageSendingOperations messagingTemplate;
-
-  WebSocketEventListener(SimpMessageSendingOperations messagingTemplate) {
-    this.messagingTemplate = messagingTemplate;
-  }
 
   @EventListener
   public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {

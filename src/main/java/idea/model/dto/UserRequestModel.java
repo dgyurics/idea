@@ -1,5 +1,6 @@
-package idea.model.request;
+package idea.model.dto;
 
+import idea.model.validation.group.AuthenticateGroup;
 import idea.model.validation.group.ResetCodeValidationGroup;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
@@ -21,17 +22,17 @@ import lombok.ToString;
 public class UserRequestModel {
   private Long id;
 
-  @NotEmpty(groups = {NewUserGroup.class, RemoveUserGroup.class, PasswordRequestGroup.class})
-  @Email(groups = {NewUserGroup.class, RemoveUserGroup.class, PasswordRequestGroup.class},
+  @NotEmpty(groups = {AuthenticateGroup.class, NewUserGroup.class, RemoveUserGroup.class, PasswordRequestGroup.class})
+  @Email(groups = {AuthenticateGroup.class, NewUserGroup.class, RemoveUserGroup.class, PasswordRequestGroup.class},
       message="Username must be a valid email")
   private String username;
 
   @ToString.Exclude
-  @Size(min = 5, groups = {NewUserGroup.class, RemoveUserGroup.class, PasswordConfirmationGroup.class},
+  @Size(min = 5, groups = {AuthenticateGroup.class, NewUserGroup.class, RemoveUserGroup.class, PasswordConfirmationGroup.class},
       message="Password must be at least five characters long")
-  @Size(max = 50, groups = {NewUserGroup.class, RemoveUserGroup.class, PasswordConfirmationGroup.class},
+  @Size(max = 50, groups = {AuthenticateGroup.class, NewUserGroup.class, RemoveUserGroup.class, PasswordConfirmationGroup.class},
       message="Password must be at least five characters long")
-  @NotEmpty(groups = {NewUserGroup.class, RemoveUserGroup.class, PasswordConfirmationGroup.class})
+  @NotEmpty(groups = {AuthenticateGroup.class, NewUserGroup.class, RemoveUserGroup.class, PasswordConfirmationGroup.class})
   private String password;
 
   @ToString.Exclude

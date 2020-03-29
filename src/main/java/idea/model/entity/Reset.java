@@ -19,7 +19,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Builder
 @NoArgsConstructor @AllArgsConstructor
 @Entity
-@Table(name = "password_reset")
+@Table(name = "auth_password_reset")
 public class Reset {
   @Id
   private String username;

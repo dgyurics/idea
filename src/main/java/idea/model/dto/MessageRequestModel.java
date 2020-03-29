@@ -1,4 +1,4 @@
-package idea.model.request;
+package idea.model.dto;
 
 import lombok.Data;
 

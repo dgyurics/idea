@@ -2,6 +2,7 @@ package idea.config.init;
 
 import idea.model.entity.User;
 import idea.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -12,15 +13,11 @@ import org.springframework.stereotype.Component;
  * The run method is executed at application startup
  */
 @Component
+@RequiredArgsConstructor
 public class CommandLineRunnerImpl implements CommandLineRunner {
   private final Logger logger = LoggerFactory.getLogger(CommandLineRunnerImpl.class);
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
-
-  CommandLineRunnerImpl(PasswordEncoder passwordEncoder, UserRepository userRepository) {
-    this.passwordEncoder = passwordEncoder;
-    this.userRepository = userRepository;
-  }
 
   @Override
   public void run(String... args) throws Exception {

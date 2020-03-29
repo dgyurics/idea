@@ -5,17 +5,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import idea.model.entity.Book;
-import idea.model.request.BookRequestModel;
-import idea.model.request.UserRequestModel;
-import idea.service.BookService;
+import idea.model.dto.BookRequestModel;
+import idea.model.dto.UserRequestModel;
 import java.util.Collection;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -25,28 +21,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class BookIT extends BaseIT {
-  private static final String USERNAME = "username@gmail.com";
-  private static final String PASSWORD = "password";
   private static final String USERNAME_ADMIN = "lagom3922@gmail.com";
   private static final String PASSWORD_ADMIN = "password123";
-  private static final Integer REGISTRATION_CODE = 123456;
 
   @Autowired
   ApplicationContext context;
-  @SpyBean
-  BookService bookService;
 
   @Before
   public void before() throws Exception {
     CommandLineRunner runner = context.getBean(CommandLineRunner.class);
     runner.run( USERNAME_ADMIN, PASSWORD_ADMIN);
-  }
-
-  @After
-  public void after() {
-    UserRequestModel model = UserRequestModel
-        .builder().username(USERNAME).password(PASSWORD).build();
-    restTemplate.exchange(getRegistrationUri(), HttpMethod.DELETE, new HttpEntity<>(model), String.class);
   }
 
   @Test
@@ -58,11 +42,14 @@ public class BookIT extends BaseIT {
 
   @Test
   public void uploadBook() {
-    final ResponseEntity<String> response = restTemplate.exchange(getLoginUri(USERNAME_ADMIN, PASSWORD_ADMIN), HttpMethod.POST, null, String.class);
-    final String session = response.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
+    UserRequestModel model = UserRequestModel.builder()
+        .username(USERNAME_ADMIN).password(PASSWORD_ADMIN).build();
+    final ResponseEntity<String> response = restTemplate.exchange(getLoginUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Cookie", session);
+    headers.add("Authorization", "Bearer " + response.getBody());
 
     BookRequestModel book = BookRequestModel.builder()
         .author("author")
@@ -86,11 +73,11 @@ public class BookIT extends BaseIT {
     assertNotNull(response.getBody());
     assertTrue(response.getBody().size() >= 5);
 
-    final ResponseEntity<String> loginResponse = restTemplate.exchange(getLoginUri(USERNAME_ADMIN, PASSWORD_ADMIN), HttpMethod.POST, null, String.class);
-    final String session = loginResponse.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
-
+    UserRequestModel model = UserRequestModel.builder()
+        .username(USERNAME_ADMIN).password(PASSWORD_ADMIN).build();
+    final ResponseEntity<String> responseLogin = restTemplate.exchange(getLoginUri(), HttpMethod.POST, new HttpEntity<>(model), String.class);
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Cookie", session);
+    headers.add("Authorization", "Bearer " + responseLogin.getBody());
 
     Collection<Book> books = response.getBody();
     books.stream().forEach(book -> {
@@ -101,14 +88,5 @@ public class BookIT extends BaseIT {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
     assertEquals(0, response.getBody().size());
-  }
-
-  @Test
-  public void cacheWorking() {
-    ResponseEntity<Collection<Book>> response = restTemplate.exchange(getBookUri(), HttpMethod.GET, null, new ParameterizedTypeReference<Collection<Book>>(){});
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    response = restTemplate.exchange(getBookUri(), HttpMethod.GET, null, new ParameterizedTypeReference<Collection<Book>>(){});
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    Mockito.verify(bookService, Mockito.times(1)).getAllBooks();
   }
 }
