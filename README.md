@@ -1,5 +1,5 @@
 # idea
-To be continued
+It all starts with an idea
 
 ---
 
