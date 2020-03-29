@@ -244,6 +244,12 @@ public class AuthIT extends BaseIT {
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
+  @Test
+  public void refreshToken_missingCookie() {
+    ResponseEntity<Void> response = restTemplate.exchange(getRefreshUri(), HttpMethod.GET, null, Void.class);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+  }
+
   private Claims decodeJWT(String jwt) {
     return Jwts.parser()
         .setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY))

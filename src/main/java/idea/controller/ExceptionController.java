@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -33,7 +34,7 @@ public class ExceptionController {
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
   }
 
-  @ExceptionHandler(value = {IllegalArgumentException.class, MethodArgumentNotValidException.class})
+  @ExceptionHandler(value = {IllegalArgumentException.class, MissingRequestCookieException.class, MethodArgumentNotValidException.class})
   public ResponseEntity<?> handleValidation(HttpServletRequest request, Exception e) {
     logger.error(e.getMessage(), e);
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
