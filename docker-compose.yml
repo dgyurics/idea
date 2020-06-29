@@ -1,4 +1,8 @@
 version: '3.7'
+
+# Must run with --compatibility flag when using docker-compose up
+# otherwise deploy options will be ignored
+
 services:
   database:
     container_name: database
@@ -9,6 +13,10 @@ services:
       POSTGRES_DB: mydb
     ports:
       - "5432:5432"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   redis:
     container_name: redis
@@ -16,9 +24,17 @@ services:
     command: redis-server --requirepass lagom123!
     ports:
       - "6379:6379"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   rabbitmq:
     container_name: rabbitmq
     image: "rabbitmq:3.8"
     ports:
       - "5672:5672"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
