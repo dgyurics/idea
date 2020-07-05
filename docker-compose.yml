@@ -13,6 +13,8 @@ services:
       POSTGRES_DB: mydb
     ports:
       - "5432:5432"
+    networks:
+      - db-api-network
     deploy:
       resources:
         limits:
@@ -38,3 +40,7 @@ services:
       resources:
         limits:
           memory: 512M
+
+networks:
+  db-api-network:
+    external: true
