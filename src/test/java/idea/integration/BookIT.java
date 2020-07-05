@@ -67,7 +67,7 @@ public class BookIT extends BaseIT {
   }
 
   @Test
-  public void removeBook() throws InterruptedException {
+  public void removeBook() {
     ResponseEntity<Collection<Book>> response = restTemplate.exchange(getBookUri(), HttpMethod.GET, null, new ParameterizedTypeReference<Collection<Book>>(){});
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
