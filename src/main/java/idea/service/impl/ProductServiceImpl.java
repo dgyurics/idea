@@ -7,6 +7,8 @@ import idea.service.ProductService;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +18,13 @@ public class ProductServiceImpl implements ProductService {
   private final ProductRepository repository;
   private final ModelMapper mapper;
 
+  @Cacheable(value="productCache")
   @Override
   public Collection<Product> getProducts() {
     return repository.findAll();
   }
 
+  @CacheEvict(value="productCache", allEntries=true)
   @Override
   public void createProduct(ProductRequestModel productDto) {
     Product product = new Product();
@@ -28,6 +32,7 @@ public class ProductServiceImpl implements ProductService {
     repository.save(product);
   }
 
+  @CacheEvict(value="productCache", allEntries=true)
   @Override
   public void updateProduct(ProductRequestModel productDto, @NonNull Long id) {
     Product product = new Product();
@@ -36,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
     repository.save(product);
   }
 
+  @CacheEvict(value="productCache", allEntries=true)
   @Override
   public void removeProduct(@NonNull Long id) {
     repository.deleteById(id);
