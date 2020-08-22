@@ -1,5 +1,6 @@
 package idea.model.entity;
 
+import java.util.Date;
 import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -36,4 +38,9 @@ public class Refresh {
   @OneToOne
   @OnDelete(action = OnDeleteAction.CASCADE)
   private User user;
+
+  // FIXME: these entries have the potential to remain in database forever, fix this
+  @Column(nullable = false, updatable = false)
+  @CreationTimestamp
+  private Date createTimestamp;
 }

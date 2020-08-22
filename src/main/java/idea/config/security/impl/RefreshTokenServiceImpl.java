@@ -61,11 +61,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
   }
 
   @Override
-  public User getUser(UUID userId) {
-    return refreshTokenRepository
-        .findById(userId)
-        .orElseThrow(() -> new AccessDeniedException("Invalid refresh token"))
-        .getUser();
+  public Refresh getToken(UUID userId) {
+    return refreshTokenRepository.findById(userId).get();
   }
 
   private Cookie createCookie(UUID token) {

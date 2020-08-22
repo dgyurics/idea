@@ -4,6 +4,7 @@ import idea.config.security.JwtTokenService;
 import idea.config.security.RefreshTokenService;
 import idea.config.security.UserService;
 import idea.model.dto.UserRequestModel;
+import idea.model.entity.Refresh;
 import idea.model.entity.User;
 import idea.model.validation.group.AuthenticateGroup;
 import idea.model.validation.group.NewUserGroup;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -54,7 +56,6 @@ public class AuthController {
   @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
   public void logout(HttpServletRequest req, HttpServletResponse res) {
     refreshService.expireToken(req, res);
-
     SecurityContextHolder.clearContext();
   }
 
@@ -69,8 +70,13 @@ public class AuthController {
 
   @ResponseStatus(HttpStatus.CREATED)
   @GetMapping("/refresh")
-  public String refresh(@CookieValue("refresh") String cookie) {
-    return jwtService.generateToken(refreshService.getUser(UUID.fromString(cookie)));
+  public String refresh(@CookieValue("refresh") String cookie, HttpServletRequest req, HttpServletResponse res) {
+    Refresh token = refreshService.getToken(UUID.fromString(cookie));
+    if(token == null) {
+      refreshService.expireToken(req, res);
+      throw new AccessDeniedException("Invalid refresh token");
+    }
+    return jwtService.generateToken(token.getUser());
   }
 
   // FIXME: Use security annotations to validate request permissions
