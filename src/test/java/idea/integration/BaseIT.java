@@ -24,14 +24,6 @@ public abstract class BaseIT {
     return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/register").build().toUri();
   }
 
-  URI getBookUri() {
-    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/book").build().toUri();
-  }
-
-  URI getBookUri(Long bookId) {
-    return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/book/{bookId}").buildAndExpand(bookId).toUri();
-  }
-
   URI getDeleteAccountUri() {
     return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path("/unregister").build().toUri();
   }
