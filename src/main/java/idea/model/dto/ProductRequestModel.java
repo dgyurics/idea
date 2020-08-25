@@ -9,6 +9,7 @@ import lombok.Data;
 @Builder
 public class ProductRequestModel {
   private Category category;
+  private Integer priority;
   @NotBlank
   private String name;
   @NotBlank

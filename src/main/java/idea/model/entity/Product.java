@@ -20,6 +20,9 @@ public class Product {
   @GeneratedValue
   private Long id;
 
+  @Column
+  private Integer priority;
+
   @Enumerated(EnumType.STRING)
   private Category category;
 
@@ -50,5 +53,7 @@ public class Product {
   void preInsert() {
     if (this.category == null)
       this.category = Category.MISC;
+    if (this.priority == null)
+      this.priority = 10;
   }
 }

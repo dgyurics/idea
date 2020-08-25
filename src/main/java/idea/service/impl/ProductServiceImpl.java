@@ -21,7 +21,7 @@ public class ProductServiceImpl implements ProductService {
   @Cacheable(value="productCache")
   @Override
   public Collection<Product> getProducts() {
-    return repository.findAll();
+    return repository.findAllByOrderByPriorityAscCreateTimestampAsc();
   }
 
   @CacheEvict(value="productCache", allEntries=true)
