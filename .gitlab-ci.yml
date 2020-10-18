@@ -1,0 +1,12 @@
+image: maven:3.6.2-jdk-11-slim
+
+stages:
+  - test
+
+test_job:
+  stage: test
+  script:
+    - pwd
+    - mvn clean
+    - mvn compile
+    - mvn verify
