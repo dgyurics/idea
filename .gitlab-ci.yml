@@ -2,11 +2,22 @@ image: maven:3.6.2-jdk-11-slim
 
 stages:
   - test
+  - build
 
-test_job:
+integration-tests:
   stage: test
   script:
     - pwd
     - mvn clean
     - mvn compile
     - mvn verify
+
+build:
+  image: docker:19.03.12
+  stage: build
+  services:
+    - docker:19.03.12-dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t registry.gitlab.com/dgyurics/idea .
+    - docker push registry.gitlab.com/dgyurics/idea
