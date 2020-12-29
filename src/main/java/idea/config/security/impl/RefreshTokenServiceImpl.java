@@ -5,6 +5,7 @@ import idea.config.security.RefreshTokenService;
 import idea.model.entity.Refresh;
 import idea.model.entity.User;
 import idea.repository.RefreshRepository;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.http.Cookie;
@@ -61,8 +62,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
   }
 
   @Override
-  public Refresh getToken(UUID userId) {
-    return refreshTokenRepository.findById(userId).get();
+  public Optional<Refresh> getToken(UUID userId) {
+    return refreshTokenRepository.findById(userId);
   }
 
   private Cookie createCookie(UUID token) {

@@ -71,15 +71,14 @@ public class AuthController {
   @ResponseStatus(HttpStatus.CREATED)
   @GetMapping("/refresh")
   public String refresh(@CookieValue("refresh") String cookie, HttpServletRequest req, HttpServletResponse res) {
-    Refresh token = refreshService.getToken(UUID.fromString(cookie));
-    if(token == null) {
-      refreshService.expireToken(req, res);
-      throw new AccessDeniedException("Invalid refresh token");
-    }
+    final Refresh token = refreshService.getToken(UUID.fromString(cookie))
+        .orElseThrow(() -> {
+          refreshService.expireToken(req, res);
+          return new AccessDeniedException("Invalid refresh token");
+        });
     return jwtService.generateToken(token.getUser());
   }
 
-  // FIXME: Use security annotations to validate request permissions
   @DeleteMapping("/register")
   public void delete(@RequestBody @Validated(RemoveUserGroup.class) UserRequestModel user) {
     userService.deleteUser(user);
@@ -91,7 +90,6 @@ public class AuthController {
     userService.requestResetPassword(user.getUsername());
   }
 
-  // FIXME: Use security annotations to validate request permissions
   @PostMapping("/forgot-password/valid-reset-code/{userId}")
   public void isValidResetCode(
       @RequestBody @Validated(ResetCodeValidationGroup.class) UserRequestModel user,
