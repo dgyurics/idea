@@ -56,7 +56,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     Cookie cookie = WebUtils.getCookie(req, cookieConfig.getName());
     if(cookie != null) {
       refreshTokenRepository.deleteById(UUID.fromString(cookie.getValue()));
-      cookie.setMaxAge(-1);
+      cookie.setMaxAge(0);
+      cookie.setValue(null);
       res.addCookie(cookie);
     }
   }
