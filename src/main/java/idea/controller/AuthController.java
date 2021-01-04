@@ -71,6 +71,7 @@ public class AuthController {
   @ResponseStatus(HttpStatus.CREATED)
   @GetMapping("/refresh")
   public String refresh(@CookieValue("refresh") String cookie, HttpServletRequest req, HttpServletResponse res) {
+    // FIXME check for refresh cookie OR is user authenticated
     final Refresh token = refreshService.getToken(UUID.fromString(cookie))
         .orElseThrow(() -> {
           refreshService.expireToken(req, res);
